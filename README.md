@@ -1,11 +1,12 @@
 Navigatorade
+---
 
-Navigator is a single-page front-end router built for modularity.
+Navigatorade is a single-page front-end router built for modularity.
 
 Routes are configured in one file.  You specify as many route handlers (responders) as you'd like. The goals are:
 
 - a singleton Navigator object that knows how to dispatch the routes
-- back/forward navigation via push state or hash urls
+- browser agnostic back/forward navigation and url editing via push state or hash urls
 - bookmarkable pages
 - a sensible params object for named params and query params
 
