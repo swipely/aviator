@@ -1,0 +1,10 @@
+{
+  "name": "navigatorade",
+  "version": "0.0.1",
+  "dependencies": {
+    "grunt": "~0.4.1"
+  },
+  "engine": {
+    "node": ">=0.8.x"
+  }
+}
