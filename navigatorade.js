@@ -51,18 +51,32 @@
   };
 
   /**
-  @method matchRouteFromURL
-  @param {Object} routes
-  @param {String} url
-  @return {Object}
-  **/
-  var matchRouteFromURL = function (routes, url) {
-    var matchedRoute = '',
-        actions = [],
-        options = [],
-        value;
+  Contains the properties for a route
+  After attempting to match a url to the Routes map
 
-    (function recurse (routeLevel) {
+  @class Route
+  @constructor
+  @private
+  **/
+  var Route = function (routes, url) {
+    this.url          = url;
+    this.matchedRoute = '';
+    this.actions      = [];
+    this.options      = [];
+
+    this.match(routes);
+  };
+
+  Route.prototype = {
+
+    /**
+    Matches the url from the routes map.
+
+    @method match
+    @param {String} routeLevel
+    @return {Object}
+    **/
+    match: function (routeLevel) {
       var action = {};
 
       for (var key in routeLevel) {
@@ -72,34 +86,32 @@
           action.responder = value;
         }
         // TODO: make this work so the indexOf checks the correct index
-        else if (url.indexOf(key) !== -1) {
-          if (typeof routeLevel[key] === 'string') {
+        else if (this.url.indexOf(key) !== -1) {
+          if (typeof value === 'string') {
             action.method = value
           }
           else if (value.method) {
             action.method = value.method;
-            options.push(value.options);
-          }
-          else {
-            recurse(routeLevel[key]);
+            this.options.push(value.options);
           }
 
           if (key !== '/' && key !== '/*') {
-            matchedRoute += key;
+            this.matchedRoute += key;
+
+            if (action.method && action.responder) {
+              this.actions.push(action);
+            }
+
+            else {
+              // recurse
+              this.match(value);
+            }
           }
 
-          if (action.method && action.responder) {
-            actions.push(action);
-          }
         }
       }
-    }(routes));
+    }
 
-    return {
-      matchedRoute: matchedRoute,
-      actions: actions,
-      options: merge(options)
-    };
   };
 
   /**
@@ -124,24 +136,40 @@
     },
 
     /**
+    @method getRouteForURL
+    @param {String} url
+    @return {Request}
+    **/
+    getRouteForURL: function (url) {
+      return new Route(this._routes, url);
+    },
+
+    /**
+    @method getRequest
+    @param {String} matchedRoute
+    @return {Request}
+    **/
+    getRequest: function (matchedRoute) {
+      return new Request({ matchedRoute: matchedRoute });
+    },
+
+    /**
     @method dispatch
     **/
     dispatch: function () {
       var url = window.location.href,
-          routeProps = matchRouteFromURL(this._routes, url),
-          request = new Request({
-            matchedRoute: routeProps.matchedRoute
-          });
+          route = this.getRouteForURL(url),
+          request = this.getRequest(route.matchedRoute),
+          options = merge(route.options);
 
-
-      each(routeProps.actions, function (action) {
+      each(route.actions, function (action) {
         var responder = action.responder,
             method    = action.method;
 
         responder[method].call(
           responder,
           request,
-          routeProps.options
+          options
         );
       });
     },

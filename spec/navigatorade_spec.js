@@ -21,36 +21,48 @@ describe('Navigatorade', function () {
   });
 
   describe('.setRoutes', function () {
+    beforeEach(function () {
+      spyOn( _navigator, 'setRoutes' );
+
+      subject.setRoutes();
+    });
+
     it('sets the routes on the _navigator', function () {
-      subject.setRoutes(routes);
-      expect( _navigator._routes ).toEqual( routes );
+      expect( _navigator.setRoutes ).toHaveBeenCalled();
     });
   });
 
   describe('.dispatch', function () {
-    describe('with pushStateEnabled', function () {
-      beforeEach(function () {
-        subject.pushStateEnabled = true;
-      });
+    beforeEach(function () {
+      spyOn( _navigator, 'setup' );
+      spyOn( _navigator, 'dispatch' );
 
-      describe('when the url matches a route', function () {
-        beforeEach(function () {
-          window.history.replaceState({}, '', '/users');
-          spyOn( usersResponder, 'index' );
-
-          subject.setRoutes(routes);
-          subject.dispatch();
-        });
-
-        it('calls the responder method', function () {
-          expect( usersResponder.index ).toHaveBeenCalled();
-        });
-      });
+      subject.dispatch();
     });
+
+    it('calls setup on the private navigator object', function () {
+      expect( _navigator.setup ).toHaveBeenCalled();
+    });
+
+    it('calls dispatch on the private navigator object', function () {
+      expect( _navigator.dispatch ).toHaveBeenCalled();
+    });
+
   });
 
   describe('.navigate', function () {
-    it('changes the url', function () { });
+    var url     = '/partners/whatever',
+        options = { showLayout: true };
+
+    beforeEach(function () {
+      spyOn( _navigator, 'navigate' );
+
+      subject.navigate( url, options );
+    });
+
+    it('calls navigate on the navigator', function () {
+      expect( _navigator.navigate ).toHaveBeenCalledWith( url, options );
+    });
   });
 
 });

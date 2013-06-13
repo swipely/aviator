@@ -5,7 +5,7 @@ module.exports = function(grunt) {
       all: {
         src: 'navigatorade.js',
         options: {
-          specs: 'spec/navigatorade_spec.js'
+          specs: 'spec/*_spec.js'
         }
       }
     }
