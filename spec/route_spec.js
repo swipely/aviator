@@ -21,12 +21,10 @@ describe('Route', function () {
 
   describe('given a matching url', function () {
 
-    beforeEach(function () {
-      url = '/users/:uuid';
-    });
-
-    describe('and a single level of routes with a responder', function () {
+    describe('with one match', function () {
       beforeEach(function () {
+        url = '/users/foo';
+
         navigator._routes = {
           '/users': {
             responder: usersResponder,
@@ -43,6 +41,45 @@ describe('Route', function () {
         expect( subject.actions ).toEqual(
           [{ method: 'show', responder: usersResponder }]
         );
+        expect( subject.options ).toEqual( {} );
+      });
+    });
+
+    describe('with multiple matches', function () {
+      var appResponder = { init: function () {} },
+          userResponder = { edit: function () {}, show: function () {} },
+          storesResponder = { index: function () {} };
+
+      beforeEach(function () {
+        url = '/users/foo/edit';
+
+        navigator._routes = {
+          responder: appResponder,
+          '/*': 'init',
+          '/users': {
+            responder: usersResponder,
+            '/': 'index',
+            '/:uuid': {
+              responder: userResponder,
+              '/': 'show',
+              '/edit': 'edit'
+            }
+          },
+          '/stores': {
+            responder: storesResponder,
+            '/': 'index'
+          }
+        };
+
+        subject = navigator.getRouteForURL(url);
+      });
+
+      it('returns the correct route properties', function () {
+        expect( subject.matchedRoute ).toBe( '/users/:uuid/edit' )
+        expect( subject.actions ).toEqual([
+          { method: 'init', responder: appResponder },
+          { method: 'edit', responder: userResponder }
+        ]);
         expect( subject.options ).toEqual( {} );
       });
     });

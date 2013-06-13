@@ -7,6 +7,21 @@
   // -- Utility ---------------------------------------------------------------
 
   /**
+  @method each
+  @param {Array} arr
+  @param {Function} iterator
+
+  @private
+  **/
+  var each = function (arr, iterator, context) {
+    context = context || this;
+
+    for (var i = 0, len = arr.length; i < len; i++) {
+      iterator.call(context, arr[i], i);
+    }
+  };
+
+  /**
   @method merge
   @param {Array[Object]}
   @return {Object}
@@ -24,18 +39,21 @@
   };
 
   /**
-  @method each
-  @param {Array} arr
-  @param {Function} iterator
-
-  @private
+  @method isPlainObject
+  @param {any} val
+  @return {Boolean}
   **/
-  var each = function (arr, iterator, context) {
-    context = context || this;
+  var isPlainObject = function (val) {
+    return (!!val) && (val.constructor === Object);
+  };
 
-    for (var i = 0, len = arr.length; i < len; i++) {
-      iterator.call(context, arr[i], i);
-    }
+  /**
+  @method isString
+  @param {Any} val
+  @return {Boolean}
+  **/
+  var isString = function (val) {
+    return typeof val === 'string';
   };
 
   // -- Internal API ----------------------------------------------------------
@@ -65,6 +83,8 @@
     this.options      = [];
 
     this.match(routes);
+
+    this.url = url;
   };
 
   Route.prototype = {
@@ -77,41 +97,108 @@
     @return {Object}
     **/
     match: function (routeLevel) {
-      var action = {};
+      var value,
+          action = {
+            responder: routeLevel.responder,
+            method:    null
+          };
 
       for (var key in routeLevel) {
         value = routeLevel[key];
 
-        if (key === 'responder') {
-          action.responder = value;
-        }
-        // TODO: make this work so the indexOf checks the correct index
-        else if (this.url.indexOf(key) !== -1) {
-          if (typeof value === 'string') {
-            action.method = value
-          }
-          else if (value.method) {
-            action.method = value.method;
-            this.options.push(value.options);
-          }
+        if (this.isFragment(key) && this.isFragmentInURL(key)) {
+          this.updateMatchedRoute(key);
+          this.updateURL(key);
 
-          if (key !== '/' && key !== '/*') {
-            this.matchedRoute += key;
-
-            if (action.method && action.responder) {
-              this.actions.push(action);
+          if (this.isActionDescriptor(value)) {
+            if (isString(value)) {
+              action.method = value;
             }
-
             else {
-              // recurse
-              this.match(value);
+              action.method = value.method;
+              this.options.push(value.options);
             }
+
+            this.actions.push(action);
           }
 
+          if (this.url.length > 0 && isPlainObject(value)) {
+            // recurse
+            this.match(value);
+          }
         }
       }
-    }
+    },
 
+    /**
+    appends the matched fragment to the matched route
+
+    @method updateMatchedRoute
+    @param {String} fragment
+    **/
+    updateMatchedRoute: function (fragment) {
+      if (fragment !== '/' && fragment !== '/*') {
+        this.matchedRoute += fragment;
+      }
+    },
+
+    /**
+    removes matched fragments from the beginning of the url
+
+    @method updateURL
+    @param {String} fragment
+    **/
+    updateURL: function (fragment) {
+      var url = this.url,
+          match;
+
+      if (fragment !== '/' && fragment !== '/*') {
+        match = url.match(/(\/\w+)\/?/);
+        if (match) {
+          this.url = url.replace(match[1], '');
+        }
+      }
+    },
+
+    /**
+    @method isFragmentInURL
+    @param {Any} fragment
+    @return {Boolean}
+    **/
+    isFragmentInURL: function (fragment) {
+      var url    = this.url,
+          prefix = fragment.substr(0,2),
+          match;
+
+      if ( fragment === '/' ) {
+        return (url === '/' || url === '');
+      }
+      else if ( fragment === '/*' || prefix === '/:') {
+        return true;
+      }
+      else {
+        match = url.match(/(\/\w+)\/?/);
+        return match && fragment === match[1];
+      }
+    },
+
+    /**
+    @method isFragment
+    @param {Any} key
+    @return {Boolean}
+    **/
+    isFragment: function (key) {
+      return key.indexOf('/') === 0;
+    },
+
+    /**
+    @method isActionDescriptor
+    @param {Any} val
+    @return {Boolean}
+    **/
+    isActionDescriptor: function (val) {
+      return isString(val) || isPlainObject(val) && val.method && val.options;
+    }
   };
 
   /**
