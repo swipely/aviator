@@ -73,35 +73,97 @@
   @class Request
   @constructor
   **/
-  var Request = function (options) {};
+  var Request = function (options) {
+    this.namedParams  = {};
+    this.queryParams  = {};
+    this.params       = {};
+
+    this.uri          = options.uri;
+    this.queryString  = options.queryString;
+    this.matchedRoute = options.matchedRoute;
+
+    this._extractNamedParamsFromURI();
+    this._extractQueryParamsFromQueryString();
+    this._mergeParams();
+  };
+
   Request.prototype = {
-    extractParamsFromUrl: function () { },
-    extractParamsFromQueryString: function () { }
+    /**
+    @method _extractNamedParamsFromURI
+    @private
+    **/
+    _extractNamedParamsFromURI: function () {
+      var uriParts = this.uri.split('/'),
+          routeParts = this.matchedRoute.split('/'),
+          params = {};
+
+      each(routeParts, function (part, i) {
+        var key;
+
+        if (part.indexOf(':') === 0) {
+          key = part.replace(':', '');
+
+          params[key] = uriParts[i];
+        }
+      });
+
+      this.namedParams = params;
+    },
+
+    /**
+    @method _extractQueryParamsFromQueryString
+    @private
+    **/
+    _extractQueryParamsFromQueryString: function () {
+      var params = {},
+          parts;
+
+      if (this.queryString) {
+        parts = this.queryString.replace('?','').split('&');
+
+        each(parts, function (part) {
+          var key = part.split('=')[0],
+              val = part.split('=')[1];
+
+          params[key] = val;
+        });
+
+        this.queryParams = params;
+      }
+    },
+
+    /**
+    @method _mergeParams
+    @private
+    **/
+    _mergeParams: function () {
+      this.params = merge(this.namedParams, this.queryParams);
+    }
   };
 
   /**
   Contains the properties for a route
-  After attempting to match a url to the Routes map
+  After attempting to match a uri to the Routes map
 
   @class Route
   @constructor
   @private
   **/
-  var Route = function (routes, url) {
-    this.url          = url;
+  var Route = function (routes, uri) {
+    this.uri          = uri;
     this.matchedRoute = '';
     this.actions      = [];
     this.options      = {};
 
     this.match(routes);
 
-    this.url = url;
+    this.uri = uri;
   };
 
   Route.prototype = {
 
     /**
-    Matches the url from the routes map.
+    Matches the uri from the routes map.
 
     @method match
     @param {String} routeLevel
@@ -117,9 +179,9 @@
       for (var key in routeLevel) {
         value = routeLevel[key];
 
-        if (this.isFragment(key) && this.isFragmentInURL(key)) {
+        if (this.isFragment(key) && this.isFragmentInURI(key)) {
           this.updateMatchedRoute(key);
-          this.updateURL(key);
+          this.updateURI(key);
 
           if (this.isActionDescriptor(value)) {
             if (isString(value)) {
@@ -133,7 +195,7 @@
             this.actions.push(action);
           }
 
-          if (this.url.length > 0 && isPlainObject(value)) {
+          if (this.uri.length > 0 && isPlainObject(value)) {
             // recurse
             this.match(value);
           }
@@ -162,41 +224,41 @@
     },
 
     /**
-    removes matched fragments from the beginning of the url
+    removes matched fragments from the beginning of the uri
 
-    @method updateURL
+    @method updateURI
     @param {String} fragment
     **/
-    updateURL: function (fragment) {
-      var url = this.url,
+    updateURI: function (fragment) {
+      var uri = this.uri,
           match;
 
       if (fragment !== '/' && fragment !== '/*') {
-        match = url.match(/(\/\w+)\/?/);
+        match = uri.match(/(\/\w+)\/?/);
         if (match) {
-          this.url = url.replace(match[1], '');
+          this.uri = uri.replace(match[1], '');
         }
       }
     },
 
     /**
-    @method isFragmentInURL
+    @method isFragmentInURI
     @param {Any} fragment
     @return {Boolean}
     **/
-    isFragmentInURL: function (fragment) {
-      var url    = this.url,
+    isFragmentInURI: function (fragment) {
+      var uri    = this.uri,
           prefix = fragment.substr(0,2),
           match;
 
       if ( fragment === '/' ) {
-        return (url === '/' || url === '');
+        return (uri === '/' || uri === '');
       }
       else if ( fragment === '/*' || prefix === '/:') {
         return true;
       }
       else {
-        match = url.match(/(\/\w+)\/?/);
+        match = uri.match(/(\/\w+)\/?/);
         return match && fragment === match[1];
       }
     },
@@ -252,28 +314,34 @@
     },
 
     /**
-    @method getRouteForURL
-    @param {String} url
+    @method getRouteForURI
+    @param {String} uri
     @return {Request}
     **/
-    getRouteForURL: function (url) {
-      return new Route(this._routes, url);
+    getRouteForURI: function (uri) {
+      return new Route(this._routes, uri);
     },
 
     /**
     @method getRequest
+    @param {String} uri
+    @param {String|Null} queryString
     @param {String} matchedRoute
     @return {Request}
     **/
-    getRequest: function (matchedRoute) {
-      return new Request({ matchedRoute: matchedRoute });
+    getRequest: function (uri, queryString, matchedRoute) {
+      return new Request({
+        uri: uri,
+        queryString: queryString,
+        matchedRoute: matchedRoute
+      });
     },
 
     /**
-    @method getURL
+    @method getURI
     @return {String}
     **/
-    getURL: function () {
+    getURI: function () {
       if (this.pushStateEnabled) {
         return location.pathname.replace(this.root, '');
       }
@@ -283,13 +351,26 @@
     },
 
     /**
+    @method getQueryString
+    @return {String|Null}
+    **/
+    getQueryString: function () {
+      return window.location.search || null;
+    },
+
+    /**
     @method dispatch
     **/
     dispatch: function () {
-      var url     = this.getURL(),
-          route   = this.getRouteForURL(url),
-          request = this.getRequest(route.matchedRoute),
-          options = route.options;
+      var uri         = this.getURI(),
+          route       = this.getRouteForURI(uri),
+          queryString = this.getQueryString(),
+          options     = route.options,
+          request     = this.getRequest(
+            uri,
+            queryString,
+            route.matchedRoute
+          );
 
       each(route.actions, function (action) {
         var responder = action.responder,
@@ -304,9 +385,9 @@
     },
 
     /**
-    @method onURLChange
+    @method onURIChange
     **/
-    onURLChange: function () {
+    onURIChange: function () {
       this.dispatch();
     },
 
@@ -327,14 +408,14 @@
 
     /**
     @method navigate
-    @param {String} url
+    @param {String} uri
     **/
-    navigate: function (url) {
+    navigate: function (uri) {
       if (this.pushStateEnabled) {
-        history.pushState({}, '', this.root + url);
+        history.pushState({}, '', this.root + uri);
       }
       else {
-        location.hash = url;
+        location.hash = uri;
       }
     },
 
@@ -346,7 +427,7 @@
       var pushStateEnabled = this.pushStateEnabled,
           evt = (pushStateEnabled ? 'popstate' : 'hashchange');
 
-      addEvent(window, evt, this.onURLChange, this);
+      addEvent(window, evt, this.onURIChange, this);
       addEvent(document, 'click', this.onClick, this);
     },
 
@@ -384,7 +465,7 @@
     linkSelector: 'a.navigate',
 
     /**
-    the root of the url from which routing will append to
+    the root of the uri from which routing will append to
 
     @property root
     @type {String}
@@ -427,10 +508,10 @@
 
     /**
     @method navigate
-    @param {String} url to navigate to
+    @param {String} uri to navigate to
     **/
-    navigate: function (url) {
-      this._navigator.navigate(url);
+    navigate: function (uri) {
+      this._navigator.navigate(uri);
     }
 
   };

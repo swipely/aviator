@@ -1,6 +1,6 @@
 describe('Route', function () {
 
-  var routes, url, subject, usersResponder;
+  var routes, uri, subject, usersResponder;
 
   beforeEach(function () {
     usersResponder = { index: function () {}, show: function () {} };
@@ -8,10 +8,10 @@ describe('Route', function () {
     navigator._routes = {};
   });
 
-  describe('given a url that doesnt match any routes', function () {
+  describe('given a uri that doesnt match any routes', function () {
     beforeEach(function () {
-      url = '/fartblaherty';
-      subject = navigator.getRouteForURL(url);
+      uri = '/fartblaherty';
+      subject = navigator.getRouteForURI(uri);
     });
 
     it('doesnt return anything', function () {
@@ -19,11 +19,11 @@ describe('Route', function () {
     });
   });
 
-  describe('given a matching url', function () {
+  describe('given a matching uri', function () {
 
     describe('with one match', function () {
       beforeEach(function () {
-        url = '/users/foo';
+        uri = '/users/foo';
 
         navigator._routes = {
           '/users': {
@@ -33,7 +33,7 @@ describe('Route', function () {
           }
         };
 
-        subject = navigator.getRouteForURL(url);
+        subject = navigator.getRouteForURI(uri);
       });
 
       it('returns the correct route properties', function () {
@@ -51,7 +51,7 @@ describe('Route', function () {
           storesResponder = { index: function () {} };
 
       beforeEach(function () {
-        url = '/users/foo/edit';
+        uri = '/users/foo/edit';
 
         navigator._routes = {
           responder: appResponder,
@@ -71,7 +71,7 @@ describe('Route', function () {
           }
         };
 
-        subject = navigator.getRouteForURL(url);
+        subject = navigator.getRouteForURI(uri);
       });
 
       it('returns the correct route properties', function () {
@@ -85,14 +85,14 @@ describe('Route', function () {
 
       describe('with options for the matched action', function () {
         beforeEach(function () {
-          url = '/';
+          uri = '/';
 
           navigator._routes['/*'] = {
             method: 'init',
             options: { showLayout: true }
           }
 
-          subject = navigator.getRouteForURL(url);
+          subject = navigator.getRouteForURI(uri);
         });
 
         it('includes those options in the routes object', function () {
@@ -101,14 +101,14 @@ describe('Route', function () {
 
         describe('with multiple options at different levels', function () {
           beforeEach(function () {
-            url = '/users/catdog/edit';
+            uri = '/users/catdog/edit';
 
             navigator._routes['/users']['/:uuid']['/edit'] = {
               method: 'edit',
               options: { renderBunnies: true }
             };
 
-            subject = navigator.getRouteForURL(url);
+            subject = navigator.getRouteForURI(uri);
           });
 
           it('merges the options into one object', function () {
@@ -121,14 +121,14 @@ describe('Route', function () {
 
         describe('with colliding options at different levels', function () {
           beforeEach(function () {
-            url = '/users/';
+            uri = '/users/';
 
             navigator._routes['/users']['/'] = {
               method: 'index',
               options: { showLayout: false }
             };
 
-            subject = navigator.getRouteForURL(url);
+            subject = navigator.getRouteForURI(uri);
           });
 
           it('gives precedence to the deeper option', function () {
