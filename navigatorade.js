@@ -270,11 +270,24 @@
     },
 
     /**
+    @method getURL
+    @return {String}
+    **/
+    getURL: function () {
+      if (this.pushStateEnabled) {
+        return location.pathname.replace(this.root, '');
+      }
+      else {
+        return location.hash.replace('#', '');
+      }
+    },
+
+    /**
     @method dispatch
     **/
     dispatch: function () {
-      var url = window.location.href,
-          route = this.getRouteForURL(url),
+      var url     = this.getURL(),
+          route   = this.getRouteForURL(url),
           request = this.getRequest(route.matchedRoute),
           options = route.options;
 
