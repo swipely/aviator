@@ -299,11 +299,31 @@
 
     /**
     @method onClick
+    @param {Event} ev
     **/
-    onClick: function () {
+    onClick: function (ev) {
+      var target = ev.target,
+          matchesSelector = this._matchesSelector(target);
+
+      if (!matchesSelector) return;
+
+      ev.preventDefault();
+
+      this.navigate(target.href);
     },
 
-    navigate: function (url, options) {},
+    /**
+    @method navigate
+    @param {String} url
+    **/
+    navigate: function (url) {
+      if (this.pushStateEnabled) {
+        history.pushState({}, '', this.root + url);
+      }
+      else {
+        location.hash = url;
+      }
+    },
 
     /**
     @method _attachEvents
@@ -315,6 +335,15 @@
 
       addEvent(window, evt, this.onURLChange, this);
       addEvent(document, 'click', this.onClick, this);
+    },
+
+    /**
+    @method _matchesSelector
+    @param {DOMNode} node
+    @protected
+    **/
+    _matchesSelector: function (node) {
+      return true;
     }
 
   };
@@ -333,6 +362,22 @@
     @default true if the browser supports pushState
     **/
     pushStateEnabled: ('pushState' in history),
+
+    /**
+    @property linkSelector
+    @type {String}
+    @default 'a.navigate'
+    **/
+    linkSelector: 'a.navigate',
+
+    /**
+    the root of the url from which routing will append to
+
+    @property root
+    @type {String}
+    @default ''
+    **/
+    root: '',
 
     /**
     @property _navigator
@@ -359,7 +404,9 @@
       var navigator = this._navigator;
 
       navigator.setup({
-        pushStateEnabled: this.pushStateEnabled
+        pushStateEnabled: this.pushStateEnabled,
+        linkSelector: this.linkSelector,
+        root: this.root
       });
 
       navigator.dispatch();
@@ -368,10 +415,9 @@
     /**
     @method navigate
     @param {String} url to navigate to
-    @param {Object} [options]
     **/
-    navigate: function (url, options) {
-      this._navigator.navigate(url, options);
+    navigate: function (url) {
+      this._navigator.navigate(url);
     }
 
   };

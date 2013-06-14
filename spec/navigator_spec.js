@@ -64,9 +64,94 @@ describe('Navigator', function () {
     });
   });
 
-  describe('#onClick', function () {});
+  describe('#onClick', function () {
+    var linkSelector = 'a.navigate',
+        event, href;
 
-  describe('#onURLChange', function () {});
+    beforeEach(function () {
+      href = '/foo/bar';
+
+      event = {
+        target: { href: href },
+        preventDefault: function () {}
+      };
+
+      subject.linkSelector = linkSelector;
+    });
+
+    describe('when the target matches the linkSelector', function () {
+      beforeEach(function () {
+        spyOn( subject, '_matchesSelector' ).andReturn(true);
+        spyOn( event, 'preventDefault' );
+        spyOn( subject, 'navigate' );
+
+        subject.onClick(event);
+      });
+
+      it('calls preventDefault', function () {
+        expect( event.preventDefault ).toHaveBeenCalled();
+      });
+
+      it('calls #navigate with the href', function () {
+        expect( subject.navigate ).toHaveBeenCalledWith('/foo/bar');
+      });
+    });
+
+    describe('when the target doesnt match linkSelector', function () {
+      beforeEach(function () {
+        spyOn( subject, '_matchesSelector' ).andReturn(false);
+        spyOn( event, 'preventDefault' );
+      });
+
+      it('doesnt call preventDefault', function () {
+        subject.onClick(event);
+        expect( event.preventDefault ).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('#navigate', function () {
+    beforeEach(function () {
+      subject.root = '/_SpecRunner.html';
+    });
+
+    describe('with push state enabled', function () {
+      beforeEach(function () {
+        subject.pushStateEnabled = true;
+      });
+
+      it('adds the href to history with the root', function () {
+        var spy = spyOn( window.history, 'pushState' ).andCallFake(function (a, b, c) {
+          expect( a ).toEqual({});
+          expect( b ).toBe( '' );
+          expect( c ).toBe( '/_SpecRunner.html/foo/bar' );
+        });
+        subject.navigate('/foo/bar');
+      });
+    });
+
+    describe('with push state disabled', function () {
+      beforeEach(function () {
+        subject.pushStateEnabled = false;
+        subject.navigate('/foo/bar');
+      });
+
+      it('changes the hash to the href', function () {
+        expect( window.location.hash ).toBe( '#/foo/bar' );
+      });
+    });
+  });
+
+  describe('#onURLChange', function () {
+    beforeEach(function () {
+      spyOn( subject, 'dispatch' );
+      subject.onURLChange();
+    });
+
+    it('calls #dispatch', function () {
+      expect( subject.dispatch ).toHaveBeenCalled();
+    });
+  });
 
   describe('#dispatch', function () {
     describe('with pushStateEnabled', function () {

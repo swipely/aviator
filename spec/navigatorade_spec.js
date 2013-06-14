@@ -42,7 +42,9 @@ describe('Navigatorade', function () {
 
     it('calls setup on the private navigator object', function () {
       expect( _navigator.setup ).toHaveBeenCalledWith({
-        pushStateEnabled: subject.pushStateEnabled
+        pushStateEnabled: subject.pushStateEnabled,
+        linkSelector: subject.linkSelector,
+        root: subject.root
       });
     });
 
@@ -53,17 +55,16 @@ describe('Navigatorade', function () {
   });
 
   describe('.navigate', function () {
-    var url     = '/partners/whatever',
-        options = { showLayout: true };
+    var url = '/partners/whatever';
 
     beforeEach(function () {
       spyOn( _navigator, 'navigate' );
 
-      subject.navigate( url, options );
+      subject.navigate( url );
     });
 
     it('calls navigate on the navigator', function () {
-      expect( _navigator.navigate ).toHaveBeenCalledWith( url, options );
+      expect( _navigator.navigate ).toHaveBeenCalledWith( url );
     });
   });
 
