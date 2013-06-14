@@ -15,11 +15,11 @@ describe('Navigator', function () {
   });
 
   afterEach(function () {
-    // reset the url
+    // reset the uri
     window.history.replaceState({}, '', '/_SpecRunner.html');
   });
 
-  describe('#getURL', function () {
+  describe('#getURI', function () {
     var root;
 
     beforeEach(function () {
@@ -33,13 +33,13 @@ describe('Navigator', function () {
         subject.pushStateEnabled = true;
       });
 
-      describe('and the url is /foo/bar', function () {
+      describe('and the uri is /foo/bar', function () {
         beforeEach(function () {
           window.history.pushState({}, '', root + '/foo/bar');
         });
 
         it('returns /foo/bar', function () {
-          expect( subject.getURL() ).toBe( '/foo/bar' );
+          expect( subject.getURI() ).toBe( '/foo/bar' );
         });
       });
     });
@@ -49,13 +49,13 @@ describe('Navigator', function () {
         subject.pushStateEnabled = false;
       });
 
-      describe('and the url is #/foo/bar', function () {
+      describe('and the uri is #/foo/bar', function () {
         beforeEach(function () {
           window.location.hash = '/foo/bar';
         });
 
         it('returns /foo/bar', function () {
-          expect( subject.getURL() ).toBe( '/foo/bar' );
+          expect( subject.getURI() ).toBe( '/foo/bar' );
         });
       });
     });
@@ -85,7 +85,7 @@ describe('Navigator', function () {
       it('listens for onpopstate', function () {
         expect( window.addEventListener ).toHaveBeenCalledWith(
           'popstate',
-          subject.onURLChange,
+          subject.onURIChange,
           false
         );
       });
@@ -99,7 +99,7 @@ describe('Navigator', function () {
       it('listens for onhashchange', function () {
         expect( window.addEventListener ).toHaveBeenCalledWith(
           'hashchange',
-          subject.onURLChange,
+          subject.onURIChange,
           false
         );
       });
@@ -184,10 +184,10 @@ describe('Navigator', function () {
     });
   });
 
-  describe('#onURLChange', function () {
+  describe('#onURIChange', function () {
     beforeEach(function () {
       spyOn( subject, 'dispatch' );
-      subject.onURLChange();
+      subject.onURIChange();
     });
 
     it('calls #dispatch', function () {
@@ -201,9 +201,9 @@ describe('Navigator', function () {
         Navigatorade.pushStateEnabled = true;
       });
 
-      describe('when the url matches a route', function () {
+      describe('when the uri matches a route', function () {
         beforeEach(function () {
-          spyOn( subject, 'getRouteForURL' ).andReturn({
+          spyOn( subject, 'getRouteForURI' ).andReturn({
             matchedRoute: '/users/:uuid',
             actions: [ { method: 'show', responder: usersResponder } ],
             options: [ { leftNav: true }, { showLayout: false } ]
