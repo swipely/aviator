@@ -82,6 +82,61 @@ describe('Route', function () {
         ]);
         expect( subject.options ).toEqual( {} );
       });
+
+      describe('with options for the matched action', function () {
+        beforeEach(function () {
+          url = '/';
+
+          navigator._routes['/*'] = {
+            method: 'init',
+            options: { showLayout: true }
+          }
+
+          subject = navigator.getRouteForURL(url);
+        });
+
+        it('includes those options in the routes object', function () {
+          expect( subject.options ).toEqual({ showLayout: true });
+        });
+
+        describe('with multiple options at different levels', function () {
+          beforeEach(function () {
+            url = '/users/catdog/edit';
+
+            navigator._routes['/users']['/:uuid']['/edit'] = {
+              method: 'edit',
+              options: { renderBunnies: true }
+            };
+
+            subject = navigator.getRouteForURL(url);
+          });
+
+          it('merges the options into one object', function () {
+            expect( subject.options ).toEqual({
+              showLayout: true,
+              renderBunnies: true
+            });
+          });
+        });
+
+        describe('with colliding options at different levels', function () {
+          beforeEach(function () {
+            url = '/users/';
+
+            navigator._routes['/users']['/'] = {
+              method: 'index',
+              options: { showLayout: false }
+            };
+
+            subject = navigator.getRouteForURL(url);
+          });
+
+          it('gives precedence to the deeper option', function () {
+            expect( subject.options ).toEqual({ showLayout: false });
+          });
+        });
+
+      });
     });
 
   });
