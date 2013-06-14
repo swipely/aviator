@@ -23,11 +23,11 @@
 
   /**
   @method merge
-  @param {Array[Object]}
   @return {Object}
   **/
-  var merge = function (arr) {
-    var result = {};
+  var merge = function () {
+    var result = {},
+        arr = Array.prototype.slice.call(arguments, 0);
 
     each(arr, function (obj) {
       for (var key in obj) {
@@ -91,7 +91,7 @@
     this.url          = url;
     this.matchedRoute = '';
     this.actions      = [];
-    this.options      = [];
+    this.options      = {};
 
     this.match(routes);
 
@@ -127,7 +127,7 @@
             }
             else {
               action.method = value.method;
-              this.options.push(value.options);
+              this.mergeOptions(value.options);
             }
 
             this.actions.push(action);
@@ -139,6 +139,14 @@
           }
         }
       }
+    },
+
+    /**
+    @method mergeOptions
+    @param {Object} options
+    **/
+    mergeOptions: function (options) {
+      this.options = merge(this.options, options);
     },
 
     /**
@@ -268,7 +276,7 @@
       var url = window.location.href,
           route = this.getRouteForURL(url),
           request = this.getRequest(route.matchedRoute),
-          options = merge(route.options);
+          options = route.options;
 
       each(route.actions, function (action) {
         var responder = action.responder,
