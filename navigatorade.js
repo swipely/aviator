@@ -39,6 +39,17 @@
   };
 
   /**
+  @method addEvent
+  @param {Any} host
+  @param {String} eventName
+  @param {Function} handler
+  @param {Any} [context]
+  **/
+  var addEvent = function (host, eventName, handler, context) {
+    host.addEventListener(eventName, handler, false);
+  };
+
+  /**
   @method isPlainObject
   @param {any} val
   @return {Boolean}
@@ -212,7 +223,17 @@
 
   Navigator.prototype = {
 
-    setup: function () {},
+    /**
+    @method setup
+    @param {Object} options
+    **/
+    setup: function (options) {
+      if (options && ('pushStateEnabled' in options)) {
+        this.pushStateEnabled = options.pushStateEnabled
+      }
+
+      this._attachEvents();
+    },
 
     /**
     @method setRoutes
@@ -268,7 +289,26 @@
       this.dispatch();
     },
 
-    navigate: function (url, options) {}
+    /**
+    @method onClick
+    **/
+    onClick: function () {
+    },
+
+    navigate: function (url, options) {},
+
+    /**
+    @method _attachEvents
+    @protected
+    **/
+    _attachEvents: function () {
+      var pushStateEnabled = this.pushStateEnabled,
+          evt = (pushStateEnabled ? 'popstate' : 'hashchange');
+
+      addEvent(window, evt, this.onURLChange, this);
+      addEvent(document, 'click', this.onClick, this);
+    }
+
   };
 
   // -- Public API ------------------------------------------------------------
@@ -308,8 +348,13 @@
     @method dispatch
     **/
     dispatch: function () {
-      this._navigator.setup();
-      this._navigator.dispatch();
+      var navigator = this._navigator;
+
+      navigator.setup({
+        pushStateEnabled: this.pushStateEnabled
+      });
+
+      navigator.dispatch();
     },
 
     /**

@@ -41,7 +41,9 @@ describe('Navigatorade', function () {
     });
 
     it('calls setup on the private navigator object', function () {
-      expect( _navigator.setup ).toHaveBeenCalled();
+      expect( _navigator.setup ).toHaveBeenCalledWith({
+        pushStateEnabled: subject.pushStateEnabled
+      });
     });
 
     it('calls dispatch on the private navigator object', function () {
