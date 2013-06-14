@@ -19,6 +19,48 @@ describe('Navigator', function () {
     window.history.replaceState({}, '', '/_SpecRunner.html');
   });
 
+  describe('#getURL', function () {
+    var root;
+
+    beforeEach(function () {
+      root = '/_SpecRunner.html';
+
+      subject.root = root;
+    });
+
+    describe('with push state enabled', function () {
+      beforeEach(function () {
+        subject.pushStateEnabled = true;
+      });
+
+      describe('and the url is /foo/bar', function () {
+        beforeEach(function () {
+          window.history.pushState({}, '', root + '/foo/bar');
+        });
+
+        it('returns /foo/bar', function () {
+          expect( subject.getURL() ).toBe( '/foo/bar' );
+        });
+      });
+    });
+
+    describe('with push state disabled', function () {
+      beforeEach(function () {
+        subject.pushStateEnabled = false;
+      });
+
+      describe('and the url is #/foo/bar', function () {
+        beforeEach(function () {
+          window.location.hash = '/foo/bar';
+        });
+
+        it('returns /foo/bar', function () {
+          expect( subject.getURL() ).toBe( '/foo/bar' );
+        });
+      });
+    });
+  });
+
   describe('#setup', function () {
     beforeEach(function () {
       spyOn( window, 'addEventListener' );
