@@ -1,5 +1,5 @@
 Navigatorade
----
+==================
 
 Navigatorade is a single-page front-end router built for modularity.
 
@@ -10,7 +10,7 @@ Routes are configured in one place.  You specify as many route handlers (respond
 - Bookmarkable pages
 - A sensible params object for named params and query params
 
-# API
+## API
 
 Navigatorade exposes a small API:
 
@@ -18,7 +18,7 @@ Navigatorade exposes a small API:
 - `dispatch`: makes the routes go pew pew
 - `navigate`:  routes a given path
 
-## Configuration properties
+### Configuration properties
 
 overwrite to customize
 
@@ -26,9 +26,10 @@ overwrite to customize
 - `linkSelector`: clicks on elements that matches this selector is hijacked and routed using the href attribute. Default it is `"a.navigate"`
 - `root`: All routing will done on top of the `root`. Default it is `""`
 
-# `setRoutes`
+## `Navigatorade.setRoutes`
 
-A (mostly) config file, that calls `Navigatorade.setRoutes()`, passing an object that represents all routes within the app.  The object is nested to represent different parts of the url:
+Pass an object that represents all routes within the app.
+The object should be nested to describe different parts of the url:
 
 ```javascript
 Navigatorade.setRoutes({
