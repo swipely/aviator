@@ -46,7 +46,7 @@
   @param {Any} [context]
   **/
   var addEvent = function (host, eventName, handler, context) {
-    host.addEventListener(eventName, handler, false);
+    host.addEventListener(eventName, handler.bind(context), false);
   };
 
   /**
@@ -180,6 +180,8 @@
         value = routeLevel[key];
 
         if (this.isFragment(key) && this.isFragmentInURI(key)) {
+          console.log('hi');
+
           this.updateMatchedRoute(key);
           this.updateURI(key);
 
@@ -298,8 +300,10 @@
     @param {Object} options
     **/
     setup: function (options) {
-      if (options && ('pushStateEnabled' in options)) {
-        this.pushStateEnabled = options.pushStateEnabled
+      options = options || {};
+
+      for (var k in options) {
+        this[k] = options[k];
       }
 
       this._attachEvents();
@@ -392,18 +396,31 @@
     },
 
     /**
+    @method onPopState
+    **/
+    onPopState: function () {
+      // some browsers fire 'popstate' on the initial page load
+      // with a null state object. In those cases we don't want
+      // to trigger the uri change
+      if (!history.state) this.onURIChange();
+    },
+
+    /**
     @method onClick
     @param {Event} ev
     **/
     onClick: function (ev) {
       var target = ev.target,
-          matchesSelector = this._matchesSelector(target);
+          matchesSelector = this._matchesSelector(target),
+          uri;
 
       if (!matchesSelector) return;
 
       ev.preventDefault();
 
-      this.navigate(target.href);
+      uri = target.pathname.replace(this.root, '');
+
+      this.navigate(uri);
     },
 
     /**
@@ -413,6 +430,7 @@
     navigate: function (uri) {
       if (this.pushStateEnabled) {
         history.pushState({}, '', this.root + uri);
+        this.onURIChange();
       }
       else {
         location.hash = uri;
@@ -427,7 +445,13 @@
       var pushStateEnabled = this.pushStateEnabled,
           evt = (pushStateEnabled ? 'popstate' : 'hashchange');
 
-      addEvent(window, evt, this.onURIChange, this);
+      if (pushStateEnabled) {
+        addEvent(window, 'popstate', this.onPopState, this);
+      }
+      else {
+        addEvent(window, 'hashchange', this.onURIChange, this);
+      }
+
       addEvent(document, 'click', this.onClick, this);
     },
 
@@ -437,7 +461,16 @@
     @protected
     **/
     _matchesSelector: function (node) {
-      return true;
+      var nodeList = document.querySelectorAll(this.linkSelector),
+          contains = false,
+          i;
+
+      for ( i = 0; i < nodeList.length; i++ ) {
+        if (!contains) contains = ( node === nodeList[i] );
+        else break;
+      }
+
+      return contains;
     }
 
   };
@@ -499,8 +532,8 @@
 
       navigator.setup({
         pushStateEnabled: this.pushStateEnabled,
-        linkSelector: this.linkSelector,
-        root: this.root
+        linkSelector:     this.linkSelector,
+        root:             this.root
       });
 
       navigator.dispatch();

@@ -67,14 +67,32 @@ describe('Navigator', function () {
       spyOn( document, 'addEventListener' );
     });
 
+    describe('with options', function () {
+      beforeEach(function () {
+        subject.setup({
+          pushStateEnabled: false,
+          linkSelector: 'a.no-thanks',
+          root: '/slash/badass'
+        });
+      });
+
+      it('saves pushStateEnabled', function () {
+        expect( subject.pushStateEnabled ).toBe( false );
+      });
+
+      it('saves linkSelector', function () {
+        expect( subject.linkSelector ).toBe( 'a.no-thanks' );
+      });
+
+      it('saves root', function () {
+        expect( subject.root ).toBe( '/slash/badass' );
+      })
+    });
+
     it('sets up listeners for all clicks', function () {
       subject.setup();
 
-      expect( document.addEventListener ).toHaveBeenCalledWith(
-        'click',
-        subject.onClick,
-        false
-      );
+      expect( document.addEventListener ).toHaveBeenCalled();
     });
 
     describe('with push state enabled', function () {
@@ -83,11 +101,7 @@ describe('Navigator', function () {
       });
 
       it('listens for onpopstate', function () {
-        expect( window.addEventListener ).toHaveBeenCalledWith(
-          'popstate',
-          subject.onURIChange,
-          false
-        );
+        expect( window.addEventListener ).toHaveBeenCalled();
       });
     });
 
@@ -97,11 +111,7 @@ describe('Navigator', function () {
       });
 
       it('listens for onhashchange', function () {
-        expect( window.addEventListener ).toHaveBeenCalledWith(
-          'hashchange',
-          subject.onURIChange,
-          false
-        );
+        expect( window.addEventListener ).toHaveBeenCalled();
       });
     });
   });

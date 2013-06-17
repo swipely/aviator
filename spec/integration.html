@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang='en'>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1">
+
+    <title>Navigatorade Integration Spec</title>
+    <meta name="description" content="whaddup BOOOSH">
+
+    <script src="/navigatorade.js"></script>
+
+    <script>
+
+    var UsersResponder = function () {},
+        usersResponder;
+
+    UsersResponder.prototype = {
+      index: function () {
+        console.log('executed usersResponder#index');
+      },
+
+      add: function () {
+        console.log('executed usersResponder#add');
+      }
+    };
+
+    usersResponder = new UsersResponder();
+
+    Navigatorade.root = '/spec/integration.html';
+
+    Navigatorade.setRoutes({
+      '/users': {
+        responder: usersResponder,
+        '/': 'index',
+        '/add': 'add'
+      }
+    });
+
+    Navigatorade.dispatch();
+
+    </script>
+
+  </head>
+  <body>
+
+    <a class="navigate" href="/users/add">Add User</a>
+    <a class="navigate" href="/users">Users Index</a>
+    <a class="navigate" href="/users/whatever">IDK</a>
+
+  </body>
+</html>
