@@ -3,7 +3,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     jasmine: {
       all: {
-        src: 'navigatorade.js',
+        src: 'aviator.js',
         options: {
           specs: 'spec/*_spec.js'
         }

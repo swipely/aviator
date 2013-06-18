@@ -1,7 +1,7 @@
-Navigatorade
+Aviator
 ==================
 
-Navigatorade is a single-page front-end router built for modularity.
+Aviator is a single-page front-end router built for modularity.
 
 Routes are configured in one place.
 You specify as many route handlers (responders) as you'd like. The goals are:
@@ -13,7 +13,7 @@ You specify as many route handlers (responders) as you'd like. The goals are:
 
 ## API
 
-Navigatorade exposes a small API:
+Aviator exposes a small API:
 
 * `setRoutes`: parses the routes config object
 * `dispatch`: makes the routes go pew pew
@@ -28,13 +28,13 @@ overwrite to customize
                   and routed using the href attribute. Default it is `"a.navigate"`
 * `root`: All routing will done on top of the `root`. Default it is `""`
 
-## `Navigatorade.setRoutes`
+## `Aviator.setRoutes`
 
 Pass an object that represents all routes within the app.
 The object should be nested to describe different parts of the url:
 
 ```javascript
-Navigatorade.setRoutes({
+Aviator.setRoutes({
   '/marketing': {
     '/campaigns': {
     }
@@ -51,7 +51,7 @@ They have methods that correspond to the values of the other elements in
 that level of the routes object.
 
 ```javascript
-Navigatorade.setRoutes({
+Aviator.setRoutes({
   '/campaigns': {
     responder: CampaignsResponder,
     '/': 'index',
@@ -70,7 +70,7 @@ subsequent levels in the object.
 With the config below:
 
 ```javascript
-Navigatorade.setRoutes({
+Aviator.setRoutes({
   '/partners': {
     responder: PartnersResponder
     '/*': 'show'
@@ -104,7 +104,7 @@ Instead of a method name string, the value of a route key can be
 an object with a method name and options:
 
 ```javascript
-Navigatorade.setRoutes({
+Aviator.setRoutes({
   '/marketing': {
     responder: MarketingResponder,
     '/*': 'show',
@@ -120,10 +120,10 @@ Upon hitting `"/marketing/reputation"`,
 `marketingResponder#show` and `reputationResponder#show`
 will be called in that order, and both will be passed the options object.
 
-## `Navigatorade.dispatch`
+## `Aviator.dispatch`
 
-After having setup routes via `Navigatorade.setRoutes`,
-call `Navigatorade.dispatch` to get things going,
+After having setup routes via `Aviator.setRoutes`,
+call `Aviator.dispatch` to get things going,
 and start listening for routing events.
 
 No matter how many times this is called it will only setup listeners for
@@ -133,19 +133,19 @@ Dispatch also sets up a click event handler that will pick up links matching
 the selector that was set in `linkSelector` and route to its `href`
 attribute instead of forcing a full page load.
 
-## `Navigatorade.navigate`
+## `Aviator.navigate`
 
-After having dispatched (`Navigatorade.dispatch`) calling change the url and
-force a routing by calling `Navigatorade.navigate`.
+After having dispatched (`Aviator.dispatch`) calling change the url and
+force a routing by calling `Aviator.navigate`.
 
 For instance calling
 ```javascript
-Navigatorade.navigate('/users/all');
+Aviator.navigate('/users/all');
 ```
 Will change the URL to `"/users/all"`. If the `root` property was set to
 `"/admin"`, the same navigate call would change the url to `"/admin/users/all"`.
 
 If the browser does not support pushState or you have set
-`pushStateEnabled` to `false`, Navigatorade will instead take the same navigate
+`pushStateEnabled` to `false`, Aviator will instead take the same navigate
 call and add it to `window.location.hash` so the url would
 look like this `"/admin#/users/all"`.

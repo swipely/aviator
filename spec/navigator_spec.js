@@ -3,7 +3,7 @@ describe('Navigator', function () {
   var subject, usersResponder, routes;
 
   beforeEach(function () {
-    subject = Navigatorade._navigator;
+    subject = Aviator._navigator;
     usersResponder = { index: function () {}, show: function () {} };
 
     routes = {
@@ -214,7 +214,7 @@ describe('Navigator', function () {
   describe('#dispatch', function () {
     describe('with pushStateEnabled', function () {
       beforeEach(function () {
-        Navigatorade.pushStateEnabled = true;
+        Aviator.pushStateEnabled = true;
       });
 
       describe('when the uri matches a route', function () {

@@ -1,9 +1,9 @@
-describe('Navigatorade', function () {
+describe('Aviator', function () {
 
   var subject, _navigator, usersResponder, routes;
 
   beforeEach(function () {
-    subject = Navigatorade;
+    subject = Aviator;
     _navigator = subject._navigator;
     usersResponder = { index: function () {}, show: function () {} };
 

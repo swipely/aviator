@@ -4,7 +4,7 @@ describe('Route', function () {
 
   beforeEach(function () {
     usersResponder = { index: function () {}, show: function () {} };
-    navigator = Navigatorade._navigator;
+    navigator = Aviator._navigator;
     navigator._routes = {};
   });
 

@@ -477,9 +477,9 @@
   // Only expose a tiny API to keep internal routing safe
 
   /**
-  @singleton Navigatorade
+  @singleton Aviator
   **/
-  window.Navigatorade = {
+  window.Aviator = {
 
     /**
     @property pushStateEnabled

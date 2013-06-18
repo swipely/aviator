@@ -3,7 +3,7 @@ describe('Request', function () {
   var subject, navigator;
 
   beforeEach(function () {
-    navigator = Navigatorade._navigator;
+    navigator = Aviator._navigator;
   });
 
   describe('namedParams', function () {
