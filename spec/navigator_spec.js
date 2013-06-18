@@ -124,7 +124,7 @@ describe('Navigator', function () {
       href = '/foo/bar';
 
       event = {
-        target: { href: href },
+        target: { pathname: href },
         preventDefault: function () {}
       };
 
@@ -170,15 +170,21 @@ describe('Navigator', function () {
     describe('with push state enabled', function () {
       beforeEach(function () {
         subject.pushStateEnabled = true;
+        spyOn( subject, 'onURIChange');
       });
 
       it('adds the href to history with the root', function () {
         var spy = spyOn( window.history, 'pushState' ).andCallFake(function (a, b, c) {
-          expect( a ).toEqual({});
+          expect( a ).toEqual( null );
           expect( b ).toBe( '' );
           expect( c ).toBe( '/_SpecRunner.html/foo/bar' );
         });
         subject.navigate('/foo/bar');
+      });
+
+      it('calls onURIChange', function () {
+        subject.navigate('/foo/bar');
+        expect( subject.onURIChange ).toHaveBeenCalled();
       });
     });
 

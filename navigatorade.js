@@ -180,8 +180,6 @@
         value = routeLevel[key];
 
         if (this.isFragment(key) && this.isFragmentInURI(key)) {
-          console.log('hi');
-
           this.updateMatchedRoute(key);
           this.updateURI(key);
 
@@ -197,7 +195,7 @@
             this.actions.push(action);
           }
 
-          if (this.uri.length > 0 && isPlainObject(value)) {
+          if (isPlainObject(value)) {
             // recurse
             this.match(value);
           }
@@ -429,7 +427,7 @@
     **/
     navigate: function (uri) {
       if (this.pushStateEnabled) {
-        history.pushState({}, '', this.root + uri);
+        history.pushState(null, '', this.root + uri);
         this.onURIChange();
       }
       else {
