@@ -172,7 +172,7 @@
     match: function (routeLevel) {
       var value,
           action = {
-            responder: routeLevel.responder,
+            target: routeLevel.target,
             method:    null
           };
 
@@ -309,7 +309,7 @@
 
     /**
     @method setRoutes
-    @param {Object} routes a configuration of routes and responders
+    @param {Object} routes a configuration of routes and targets
     **/
     setRoutes: function (routes) {
       this._routes = routes;
@@ -375,11 +375,11 @@
           );
 
       each(route.actions, function (action) {
-        var responder = action.responder,
-            method    = action.method;
+        var target = action.target,
+            method = action.method;
 
-        responder[method].call(
-          responder,
+        target[method].call(
+          target,
           request,
           options
         );
@@ -521,7 +521,7 @@
     },
 
     /**
-    dispatches routes to responders and sets up event handlers
+    dispatches routes to targets and sets up event handlers
 
     @method dispatch
     **/

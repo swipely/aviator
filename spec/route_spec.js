@@ -1,9 +1,9 @@
 describe('Route', function () {
 
-  var routes, uri, subject, usersResponder;
+  var routes, uri, subject, usersTarget;
 
   beforeEach(function () {
-    usersResponder = { index: function () {}, show: function () {} };
+    usersTarget = { index: function () {}, show: function () {} };
     navigator = Aviator._navigator;
     navigator._routes = {};
   });
@@ -27,7 +27,7 @@ describe('Route', function () {
 
         navigator._routes = {
           '/users': {
-            responder: usersResponder,
+            target: usersTarget,
             '/': 'index',
             '/:uuid': 'show'
           }
@@ -39,34 +39,34 @@ describe('Route', function () {
       it('returns the correct route properties', function () {
         expect( subject.matchedRoute ).toBe( '/users/:uuid' )
         expect( subject.actions ).toEqual(
-          [{ method: 'show', responder: usersResponder }]
+          [{ method: 'show', target: usersTarget }]
         );
         expect( subject.options ).toEqual( {} );
       });
     });
 
     describe('with multiple matches', function () {
-      var appResponder = { init: function () {} },
-          userResponder = { edit: function () {}, show: function () {} },
-          storesResponder = { index: function () {} };
+      var appTarget     = { init: function () {} },
+          userTarget    = { edit: function () {}, show: function () {} },
+          storesTarget  = { index: function () {} };
 
       beforeEach(function () {
         uri = '/users/foo/edit';
 
         navigator._routes = {
-          responder: appResponder,
+          target: appTarget,
           '/*': 'init',
           '/users': {
-            responder: usersResponder,
+            target: usersTarget,
             '/': 'index',
             '/:uuid': {
-              responder: userResponder,
+              target: userTarget,
               '/': 'show',
               '/edit': 'edit'
             }
           },
           '/stores': {
-            responder: storesResponder,
+            target: storesTarget,
             '/': 'index'
           }
         };
@@ -77,8 +77,8 @@ describe('Route', function () {
       it('returns the correct route properties', function () {
         expect( subject.matchedRoute ).toBe( '/users/:uuid/edit' )
         expect( subject.actions ).toEqual([
-          { method: 'init', responder: appResponder },
-          { method: 'edit', responder: userResponder }
+          { method: 'init', target: appTarget },
+          { method: 'edit', target: userTarget }
         ]);
         expect( subject.options ).toEqual( {} );
       });

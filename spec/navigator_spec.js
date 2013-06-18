@@ -1,14 +1,14 @@
 describe('Navigator', function () {
 
-  var subject, usersResponder, routes;
+  var subject, usersTarget, routes;
 
   beforeEach(function () {
     subject = Aviator._navigator;
-    usersResponder = { index: function () {}, show: function () {} };
+    usersTarget = { index: function () {}, show: function () {} };
 
     routes = {
       '/users': {
-        responder: usersResponder,
+        target: usersTarget,
         '/': 'index'
       }
     };
@@ -221,18 +221,18 @@ describe('Navigator', function () {
         beforeEach(function () {
           spyOn( subject, 'getRouteForURI' ).andReturn({
             matchedRoute: '/users/:uuid',
-            actions: [ { method: 'show', responder: usersResponder } ],
+            actions: [ { method: 'show', target: usersTarget } ],
             options: [ { leftNav: true }, { showLayout: false } ]
           });
 
           window.history.replaceState({}, '', '/users');
-          spyOn( usersResponder, 'show' );
+          spyOn( usersTarget, 'show' );
 
           subject.dispatch();
         });
 
-        it('calls the responder method', function () {
-          expect( usersResponder.show ).toHaveBeenCalled();
+        it('calls the target method', function () {
+          expect( usersTarget.show ).toHaveBeenCalled();
         });
       });
     });

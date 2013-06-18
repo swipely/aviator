@@ -4,7 +4,7 @@ Aviator
 Aviator is a single-page front-end router built for modularity.
 
 Routes are configured in one place.
-You specify as many route handlers (responders) as you'd like. The goals are:
+You specify as many route handlers (targets) as you'd like. The goals are:
 
 * A singleton Navigator object that knows how to dispatch the routes
 * Browser agnostic back/forward navigation and url editing via push state or hash urls
@@ -43,17 +43,17 @@ Aviator.setRoutes({
 ```
 
 Keys in the object are either strings that represent routes,
-or a special key called `responder`. The value of this key is an object
+or a special key called `target`. The value of this key is an object
 that accepts and responds to urls.
 
-Responders are objects that handle the route changes.
+Targets are objects that handle the route changes.
 They have methods that correspond to the values of the other elements in
 that level of the routes object.
 
 ```javascript
 Aviator.setRoutes({
   '/campaigns': {
-    responder: CampaignsResponder,
+    target: CampaignsTarget,
     '/': 'index',
     '/add': 'add'
   }
@@ -61,9 +61,9 @@ Aviator.setRoutes({
 ```
 
 In the above case, hitting `"/campaigns/add"` would call the add method on
-the on the MarketingResponder.
+the on the MarketingTarget.
 
-The special key `/*` indicates a method on that responder to be called
+The special key `/*` indicates a method on that target to be called
 before any other route handler methods on that level and any
 subsequent levels in the object.
 
@@ -72,14 +72,14 @@ With the config below:
 ```javascript
 Aviator.setRoutes({
   '/partners': {
-    responder: PartnersResponder
+    target: PartnersTarget
     '/*': 'show'
     '/marketing': {
-      responder: MarketingResponder,
+      target: MarketingTarget,
       '/*': 'show',
       '/': 'index',
       '/campaigns': {
-        responder: CampaignsResponder,
+        target: CampaignsTarget
         '/': 'index',
         '/add': 'add'
       }
@@ -90,15 +90,15 @@ Aviator.setRoutes({
 
 Hitting the url `"/partners/marketing"` calls
 
-1. `partnersResponder#show`
-2. `marketingResponder#show`
-3. `marketingResponder#index`
+1. `partnersTarget#show`
+2. `marketingTarget#show`
+3. `marketingTarget#index`
 
 Hitting the url `"/partners/marketing/campaigns/add"` calls
 
-1. `partnersResponder#show`
-2. `marketingResponder#show`
-3. `campaignsResponder#add`
+1. `partnersTarget#show`
+2. `marketingTarget#show`
+3. `campaignsTarget#add`
 
 Instead of a method name string, the value of a route key can be
 an object with a method name and options:
@@ -106,10 +106,10 @@ an object with a method name and options:
 ```javascript
 Aviator.setRoutes({
   '/marketing': {
-    responder: MarketingResponder,
+    target: MarketingTarget,
     '/*': 'show',
     '/reputation': {
-      responder: ReputationResponder,
+      target: ReputationTarget,
       '/': { method: 'show', options: { renderMarketingLayout: false } }
     }
   }
@@ -117,7 +117,7 @@ Aviator.setRoutes({
 ```
 
 Upon hitting `"/marketing/reputation"`,
-`marketingResponder#show` and `reputationResponder#show`
+`marketingTarget#show` and `reputationTarget#show`
 will be called in that order, and both will be passed the options object.
 
 ## `Aviator.dispatch`
