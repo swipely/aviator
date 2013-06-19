@@ -28,9 +28,14 @@ describe('Request', function () {
   });
 
   describe('queryParams', function () {
-    describe('with a query string', function () {
-      var route = '/snap',
-          queryString = '?bro=foo&dawg=bar&baz=boo';
+    var route, queryString;
+
+    beforeEach(function () {
+      route = '/snap';
+    });
+
+    describe('with a regular query string', function () {
+      queryString = '?bro=foo&dawg=bar&baz=boo';
 
       beforeEach(function () {
         subject = navigator.getRequest('/snap', queryString, route);
@@ -44,6 +49,41 @@ describe('Request', function () {
         });
       });
     });
+
+    describe('using the rails convention for arrays in a query', function () {
+      beforeEach(function () {
+        queryString = '?bros[]=simon&bros[]=barnaby&chickens[]=earl&dinosaurs=fun';
+        subject = navigator.getRequest('/snap', queryString, route);
+      });
+
+      it('stores values for the same key in an array', function () {
+        expect( subject.queryParams['bros'] ).toEqual( [ 'simon', 'barnaby' ] );
+      });
+
+      it('does not assume that single values are meant to be in arrays', function () {
+        expect( subject.queryParams['dinosaurs'] ).toEqual( 'fun' );
+      });
+
+      it('puts values explicitly specified to be in arrays in arrays', function () {
+        expect( subject.queryParams['chickens'] ).toEqual( [ 'earl' ] )
+      });
+    });
+
+    describe('with an invalid query string key', function () {
+      beforeEach(function () {
+        queryString = '?bros=keith&bros-george';
+        subject = navigator.getRequest('/snap', queryString, route);
+      });
+
+      it('handles it gracefully', function () {
+        expect( subject.queryParams['bros'] ).toBe( 'keith' );
+      });
+
+      it('handles it gracefully', function () {
+        expect( Object.keys(subject.queryParams).length ).toBe( 1 );
+      });
+    });
+
   });
 
   describe('params', function () {

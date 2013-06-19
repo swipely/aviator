@@ -111,24 +111,51 @@
     },
 
     /**
+    Splits the query string by '&'. Splits each part by '='.
+    Passes the key and value for each part to _applyQueryParam
+
     @method _extractQueryParamsFromQueryString
     @private
     **/
     _extractQueryParamsFromQueryString: function () {
-      var params = {},
-          parts;
+      var parts;
 
-      if (this.queryString) {
-        parts = this.queryString.replace('?','').split('&');
+      if (!this.queryString) return;
 
-        each(parts, function (part) {
-          var key = part.split('=')[0],
-              val = part.split('=')[1];
+      parts = this.queryString.replace('?','').split('&');
 
-          params[key] = val;
-        });
+      each(parts, function (part) {
+        var key = part.split('=')[0],
+            val = part.split('=')[1];
 
-        this.queryParams = params;
+        if ( part.indexOf( '=' ) === -1 ) return;
+        this._applyQueryParam( key, val );
+
+      }, this);
+
+    },
+
+    /**
+    Update the queryParams property with a new key and value.
+    Values for keys with the [] notation are put into arrays
+    or pushed into an existing array for that key.
+
+    @method _applyQueryParam
+    @param {String} key
+    @param {String} val
+    **/
+    _applyQueryParam: function (key, val) {
+      if ( key.indexOf( '[]' ) !== -1 ) {
+        key = key.replace( '[]', '' );
+
+        if ( this.queryParams[key] instanceof Array ) {
+          this.queryParams[key].push(val);
+        } else {
+          this.queryParams[key] = [ val ];
+        }
+      }
+      else {
+        this.queryParams[key] = val;
       }
     },
 
