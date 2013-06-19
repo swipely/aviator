@@ -75,11 +75,11 @@ describe('Request', function () {
         subject = navigator.getRequest('/snap', queryString, route);
       });
 
-      it('handles it gracefully', function () {
+      it('includes the valid params', function () {
         expect( subject.queryParams['bros'] ).toBe( 'keith' );
       });
 
-      it('handles it gracefully', function () {
+      it('does not include invalid params', function () {
         expect( Object.keys(subject.queryParams).length ).toBe( 1 );
       });
     });
