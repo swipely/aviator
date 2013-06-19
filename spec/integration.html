@@ -16,12 +16,14 @@
         usersResponder;
 
     UsersResponder.prototype = {
-      index: function () {
-        console.log('executed usersResponder#index');
+      index: function (request, options) {
+        console.log('request: ', request);
+        console.log('options: ', options);
       },
 
-      add: function () {
-        console.log('executed usersResponder#add');
+      add: function (request, options) {
+        console.log('request: ', request);
+        console.log('options: ', options);
       }
     };
 
