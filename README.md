@@ -1,6 +1,8 @@
 Aviator
 ==================
 
+[![Build Status](https://travis-ci.org/swipely/aviator.png)](https://travis-ci.org/swipely/aviator)
+
 Aviator is a single-page front-end router built for modularity.
 
 Routes are configured in one place.
