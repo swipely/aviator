@@ -17,7 +17,8 @@ Aviator exposes a small API:
 
 * `setRoutes`: parses the routes config object
 * `dispatch`: makes the routes go pew pew
-* `navigate`:  routes a given path
+* `navigate`: routes a given path
+* `refresh`: re-dispatches the current uri
 
 ### Configuration properties
 
@@ -149,3 +150,7 @@ If the browser does not support pushState or you have set
 `pushStateEnabled` to `false`, Aviator will instead take the same navigate
 call and add it to `window.location.hash` so the url would
 look like this `"/admin#/users/all"`.
+
+## `Aviator.refresh`
+
+re-dispatch the current uri

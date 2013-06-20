@@ -436,6 +436,13 @@
     },
 
     /**
+    @method refresh
+    **/
+    refresh: function () {
+      this.dispatch();
+    },
+
+    /**
     @method _attachEvents
     @protected
     **/
@@ -543,6 +550,13 @@
     **/
     navigate: function (uri) {
       this._navigator.navigate(uri);
+    },
+
+    /**
+    @method refresh
+    **/
+    refresh: function () {
+      this._navigator.refresh();
     }
 
   };
