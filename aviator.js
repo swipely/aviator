@@ -7,6 +7,20 @@
   // -- Utility ---------------------------------------------------------------
 
   /**
+  binds a function to a context
+
+  @method bind
+  @param {Function} func
+  @param {Object} context
+  @return {Function}
+  **/
+  var bind = function (func, context) {
+    return function () {
+      func.apply(context, Array.prototype.slice.call(arguments));
+    };
+  };
+
+  /**
   @method each
   @param {Array} arr
   @param {Function} iterator
@@ -46,7 +60,7 @@
   @param {Any} [context]
   **/
   var addEvent = function (host, eventName, handler, context) {
-    host.addEventListener(eventName, handler.bind(context), false);
+    host.addEventListener(eventName, bind(handler, context), false);
   };
 
   /**

@@ -7,6 +7,9 @@
     "grunt-contrib-jasmine": "0.4.2",
     "grunt-cli": "0.1.9"
   },
+  "scripts": {
+    "test": "./node_modules/grunt-cli/bin/grunt jasmine --verbose"
+  },
   "engine": {
     "node": ">=0.8.x"
   }
