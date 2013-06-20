@@ -200,6 +200,14 @@ describe('Navigator', function () {
     });
   });
 
+  describe('#refresh', function () {
+    it('calls navigate with the current uri', function () {
+      spyOn( subject, 'dispatch' );
+      subject.refresh();
+      expect( subject.dispatch ).toHaveBeenCalled();
+    });
+  });
+
   describe('#onURIChange', function () {
     beforeEach(function () {
       spyOn( subject, 'dispatch' );

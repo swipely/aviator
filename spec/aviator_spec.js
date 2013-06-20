@@ -54,6 +54,17 @@ describe('Aviator', function () {
 
   });
 
+  describe('.refresh', function () {
+    beforeEach(function () {
+      spyOn( _navigator, 'refresh' );
+      subject.refresh();
+    });
+
+    it('calls refresh on the navigator', function () {
+      expect( _navigator.refresh ).toHaveBeenCalled();
+    });
+  });
+
   describe('.navigate', function () {
     var url = '/partners/whatever';
 
