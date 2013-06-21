@@ -419,6 +419,10 @@
         var target = action.target,
             method = action.method;
 
+        if (!(method in target)) {
+          throw new Error("Can't call " + method + ' on target for uri ' + request.uri);
+        }
+
         target[method].call(
           target,
           request,
