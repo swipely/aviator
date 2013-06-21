@@ -225,15 +225,19 @@
           this.updateURI(key);
 
           if (this.isActionDescriptor(value)) {
-            if (isString(value)) {
-              action.method = value;
-            }
-            else {
-              action.method = value.method;
-              this.mergeOptions(value.options);
-            }
 
-            this.actions.push(action);
+            // Check that if this fragment is a namedParam,
+            // we never override a regular fragment.
+            if (!this.isNamedParam(key) || !action.method) {
+              if (isString(value)) {
+                action.method = value;
+              }
+              else {
+                action.method = value.method;
+                this.mergeOptions(value.options);
+              }
+              this.actions.push(action);
+            }
           }
 
           if (isPlainObject(value)) {
@@ -289,14 +293,16 @@
     **/
     isFragmentInURI: function (fragment) {
       var uri    = this.uri,
-          prefix = fragment.substr(0,2),
           match;
 
       if ( fragment === '/' ) {
         return (uri === '/' || uri === '');
       }
-      else if ( fragment === '/*' || prefix === '/:') {
+      else if ( fragment === '/*' ) {
         return true;
+      }
+      else if ( this.isNamedParam(fragment) ) {
+        return (uri !== '/' && uri !== '');
       }
       else {
         match = uri.match(/(\/\w+)\/?/);
@@ -320,6 +326,15 @@
     **/
     isActionDescriptor: function (val) {
       return isString(val) || isPlainObject(val) && val.method && val.options;
+    },
+
+    /**
+    @method isNamedParam
+    @param {String} fragment
+    @return {Boolean}
+    **/
+    isNamedParam: function (fragment) {
+      return fragment.indexOf('/:') === 0;
     }
   };
 

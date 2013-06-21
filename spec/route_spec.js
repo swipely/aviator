@@ -3,7 +3,11 @@ describe('Route', function () {
   var routes, uri, subject, usersTarget;
 
   beforeEach(function () {
-    usersTarget = { index: function () {}, show: function () {} };
+    usersTarget = {
+      index: function () {},
+      show: function () {},
+      best: function () {}
+    };
     navigator = Aviator._navigator;
     navigator._routes = {};
   });
@@ -43,6 +47,27 @@ describe('Route', function () {
         );
         expect( subject.options ).toEqual( {} );
       });
+    });
+
+    describe('matching a route with a /: on the same route level', function () {
+      beforeEach(function () {
+        uri = '/best';
+
+        navigator._routes = {
+          target: usersTarget,
+          '/best': 'best',
+          '/:uuid': 'show'
+        };
+
+        subject = navigator.getRouteForURI(uri);
+      });
+
+      it('matches best', function () {
+        expect( subject.actions ).toEqual([
+          { method: 'best', target: usersTarget }
+        ]);
+      });
+
     });
 
     describe('with multiple matches', function () {
