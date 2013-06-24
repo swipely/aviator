@@ -54,6 +54,17 @@ describe('Aviator', function () {
 
   });
 
+  describe('.getURI', function () {
+    beforeEach(function () {
+      spyOn( _navigator, 'getURI' );
+      subject.getURI();
+    });
+
+    it('calls getURI on the navigator', function () {
+      expect( _navigator.getURI ).toHaveBeenCalled();
+    });
+  });
+
   describe('.refresh', function () {
     beforeEach(function () {
       spyOn( _navigator, 'refresh' );
