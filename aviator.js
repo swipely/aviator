@@ -460,13 +460,15 @@
     },
 
     /**
+    some browsers fire 'popstate' on the initial page load
+    with a null state object. In those cases we don't want
+    to trigger the uri change
+
     @method onPopState
+    @param {Event}
     **/
-    onPopState: function () {
-      // some browsers fire 'popstate' on the initial page load
-      // with a null state object. In those cases we don't want
-      // to trigger the uri change
-      if (!history.state) this.onURIChange();
+    onPopState: function (ev) {
+      if (ev.state) this.onURIChange();
     },
 
     /**
@@ -497,12 +499,11 @@
 
       if (this.pushStateEnabled) {
         if (options.replace) {
-          history.replaceState(null, '', this.root + uri);
+          history.replaceState('navigate', '', this.root + uri);
         }
         else {
-          history.pushState(null, '', this.root + uri);
+          history.pushState('navigate', '', this.root + uri);
         }
-
         this.onURIChange();
       }
       else {

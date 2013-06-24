@@ -175,7 +175,7 @@ describe('Navigator', function () {
 
       it('pushes the href to history with the root', function () {
         var spy = spyOn( window.history, 'pushState' ).andCallFake(function (a, b, c) {
-          expect( a ).toEqual( null );
+          expect( a ).toEqual( 'navigate' );
           expect( b ).toBe( '' );
           expect( c ).toBe( '/_SpecRunner.html/foo/bar' );
         });
