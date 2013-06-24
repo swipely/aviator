@@ -490,10 +490,19 @@
     /**
     @method navigate
     @param {String} uri
+    @param {Object} [options]
     **/
-    navigate: function (uri) {
+    navigate: function (uri, options) {
+      var options = options || {};
+
       if (this.pushStateEnabled) {
-        history.pushState(null, '', this.root + uri);
+        if (options.replace) {
+          history.replaceState(null, '', this.root + uri);
+        }
+        else {
+          history.pushState(null, '', this.root + uri);
+        }
+
         this.onURIChange();
       }
       else {
@@ -613,9 +622,10 @@
     /**
     @method navigate
     @param {String} uri to navigate to
+    @param {Object} [options]
     **/
-    navigate: function (uri) {
-      this._navigator.navigate(uri);
+    navigate: function (uri, options) {
+      this._navigator.navigate(uri, options);
     },
 
     /**

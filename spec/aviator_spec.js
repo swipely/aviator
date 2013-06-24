@@ -77,16 +77,17 @@ describe('Aviator', function () {
   });
 
   describe('.navigate', function () {
-    var url = '/partners/whatever';
+    var url = '/partners/whatever',
+        opts = {};
 
     beforeEach(function () {
       spyOn( _navigator, 'navigate' );
 
-      subject.navigate( url );
+      subject.navigate( url, opts);
     });
 
     it('calls navigate on the navigator', function () {
-      expect( _navigator.navigate ).toHaveBeenCalledWith( url );
+      expect( _navigator.navigate ).toHaveBeenCalledWith( url, opts );
     });
   });
 
