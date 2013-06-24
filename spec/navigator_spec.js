@@ -173,7 +173,7 @@ describe('Navigator', function () {
         spyOn( subject, 'onURIChange');
       });
 
-      it('adds the href to history with the root', function () {
+      it('pushes the href to history with the root', function () {
         var spy = spyOn( window.history, 'pushState' ).andCallFake(function (a, b, c) {
           expect( a ).toEqual( null );
           expect( b ).toBe( '' );
@@ -185,6 +185,15 @@ describe('Navigator', function () {
       it('calls onURIChange', function () {
         subject.navigate('/foo/bar');
         expect( subject.onURIChange ).toHaveBeenCalled();
+      });
+
+      describe('and called with replace: true', function () {
+        it('replaces the href to history with the root', function () {
+          spyOn( window.history, 'replaceState' ).andCallThrough();
+
+          subject.navigate('/foo/bar', { replace: true });
+          expect(window.history.replaceState).toHaveBeenCalled();
+        });
       });
     });
 

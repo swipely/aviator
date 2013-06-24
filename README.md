@@ -153,6 +153,9 @@ If the browser does not support pushState or you have set
 call and add it to `window.location.hash` so the url would
 look like this `"/admin#/users/all"`.
 
+If you wish to replace the history item instead pushing to the history list
+call `navigate` with the replace option: `Aviator.navigate('/users/all', { replace: true });`
+
 ## `Aviator.refresh`
 
 re-dispatch the current uri
