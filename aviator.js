@@ -619,6 +619,14 @@
     },
 
     /**
+    @method getURI
+    @return {String}
+    **/
+    getURI: function () {
+      return this._navigator.getURI();
+    },
+
+    /**
     @method refresh
     **/
     refresh: function () {
