@@ -14,11 +14,13 @@
 
     var usersTarget = {
       index: function (request, options) {
+        console.log('usersTarget.index');
         console.log('request: ', request);
         console.log('options: ', options);
       },
 
       add: function (request, options) {
+        console.log('usersTarget.add');
         console.log('request: ', request);
         console.log('options: ', options);
       }
