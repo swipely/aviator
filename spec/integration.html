@@ -12,10 +12,7 @@
 
     <script>
 
-    var UsersResponder = function () {},
-        usersResponder;
-
-    UsersResponder.prototype = {
+    var usersTarget = {
       index: function (request, options) {
         console.log('request: ', request);
         console.log('options: ', options);
@@ -27,13 +24,11 @@
       }
     };
 
-    usersResponder = new UsersResponder();
-
     Aviator.root = '/spec/integration.html';
 
     Aviator.setRoutes({
       '/users': {
-        responder: usersResponder,
+        target: usersTarget,
         '/': 'index',
         '/add': 'add'
       }
