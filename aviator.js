@@ -45,7 +45,9 @@
 
     each(arr, function (obj) {
       for (var key in obj) {
-        result[key] = obj[key];
+        if (obj.hasOwnProperty(key)) {
+          result[key] = obj[key];
+        }
       }
     });
 
@@ -218,31 +220,33 @@
           };
 
       for (var key in routeLevel) {
-        value = routeLevel[key];
+        if (routeLevel.hasOwnProperty(key)) {
+          value = routeLevel[key];
 
-        if (this.isFragment(key) && this.isFragmentInURI(key)) {
-          this.updateMatchedRoute(key);
-          this.updateURI(key);
+          if (this.isFragment(key) && this.isFragmentInURI(key)) {
+            this.updateMatchedRoute(key);
+            this.updateURI(key);
 
-          if (this.isActionDescriptor(value)) {
+            if (this.isActionDescriptor(value)) {
 
-            // Check that if this fragment is a namedParam,
-            // we never override a regular fragment.
-            if (!this.isNamedParam(key) || !action.method) {
-              if (isString(value)) {
-                action.method = value;
+              // Check that if this fragment is a namedParam,
+              // we never override a regular fragment.
+              if (!this.isNamedParam(key) || !action.method) {
+                if (isString(value)) {
+                  action.method = value;
+                }
+                else {
+                  action.method = value.method;
+                  this.mergeOptions(value.options);
+                }
+                this.actions.push(action);
               }
-              else {
-                action.method = value.method;
-                this.mergeOptions(value.options);
-              }
-              this.actions.push(action);
             }
-          }
 
-          if (isPlainObject(value)) {
-            // recurse
-            this.match(value);
+            if (isPlainObject(value)) {
+              // recurse
+              this.match(value);
+            }
           }
         }
       }
@@ -357,7 +361,9 @@
       options = options || {};
 
       for (var k in options) {
-        this[k] = options[k];
+        if (options.hasOwnProperty(k)) {
+          this[k] = options[k];
+        }
       }
 
       this._attachEvents();
