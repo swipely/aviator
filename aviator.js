@@ -506,7 +506,8 @@
         this.onURIChange();
       }
       else {
-        location.hash = uri;
+        if (options.replace) location.replace('#' + uri);
+        else location.hash = uri;
       }
     },
 
