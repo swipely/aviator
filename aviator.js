@@ -242,6 +242,9 @@
                 this.actions.push(action);
               }
             }
+            else if (value.hasOwnProperty('options')) {
+              this.mergeOptions(value.options);
+            }
 
             if (isPlainObject(value)) {
               // recurse
