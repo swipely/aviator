@@ -161,6 +161,24 @@ describe('Route', function () {
           });
         });
 
+        describe('with options with no `method`', function () {
+          beforeEach(function () {
+            uri = '/users/catdog/edit';
+
+            navigator._routes['/users']['/:uuid']['/*'] = {
+              options: { renderCats: true }
+            };
+
+            subject = navigator.getRouteForURI(uri);
+          });
+
+          it('merges the options into one object', function () {
+            expect( subject.options ).toEqual({
+              showLayout: true,
+              renderCats: true
+            });
+          });
+        });
       });
     });
 
