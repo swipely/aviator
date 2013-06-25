@@ -484,6 +484,10 @@
 
       uri = target.pathname.replace(this.root, '');
 
+      // Some browsers drop the leading slash
+      // from an `a` tag's href location
+      if ( uri.charAt(0) !== '/' ) uri = '/' + uri;
+
       this.navigate(uri);
     },
 
