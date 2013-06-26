@@ -31,7 +31,7 @@ overwrite to customize
                   and routed using the href attribute. Default it is `"a.navigate"`
 * `root`: All routing will done on top of the `root`. Default it is `""`
 
-## `Aviator.setRoutes`
+### `Aviator.setRoutes`
 
 Pass an object that represents all routes within the app.
 The object should be nested to describe different parts of the url:
@@ -123,7 +123,7 @@ Upon hitting `"/marketing/reputation"`,
 `marketingTarget#show` and `reputationTarget#show`
 will be called in that order, and both will be passed the options object.
 
-## `Aviator.dispatch`
+### `Aviator.dispatch`
 
 After having setup routes via `Aviator.setRoutes`,
 call `Aviator.dispatch` to get things going,
@@ -136,7 +136,7 @@ Dispatch also sets up a click event handler that will pick up links matching
 the selector that was set in `linkSelector` and route to its `href`
 attribute instead of forcing a full page load.
 
-## `Aviator.navigate`
+### `Aviator.navigate`
 
 After having dispatched (`Aviator.dispatch`) calling change the url and
 force a routing by calling `Aviator.navigate`.
@@ -156,6 +156,10 @@ look like this `"/admin#/users/all"`.
 If you wish to replace the history item instead pushing to the history list
 call `navigate` with the replace option: `Aviator.navigate('/users/all', { replace: true });`
 
-## `Aviator.refresh`
+### `Aviator.refresh`
 
 re-dispatch the current uri
+
+## Browser support
+
+Aviator supports modern browsers: IE9+, Chrome, Safari, Firefox, Opera
