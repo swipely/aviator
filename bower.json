@@ -1,0 +1,10 @@
+{
+  "name": "aviator",
+  "version": "0.0.1",
+  "main": "aviator.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ]
+}
