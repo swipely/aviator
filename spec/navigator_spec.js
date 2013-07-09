@@ -121,7 +121,8 @@ describe('Navigator', function () {
         event, href;
 
     beforeEach(function () {
-      href = '/foo/bar';
+      href = 'abc/foo/bar';
+      subject.root = '/abc';
 
       event = {
         target: { pathname: href },
@@ -144,7 +145,7 @@ describe('Navigator', function () {
         expect( event.preventDefault ).toHaveBeenCalled();
       });
 
-      it('calls #navigate with the href', function () {
+      it('strips the root and calls #navigate with the href', function () {
         expect( subject.navigate ).toHaveBeenCalledWith('/foo/bar');
       });
     });

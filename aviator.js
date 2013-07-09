@@ -481,17 +481,18 @@
     onClick: function (ev) {
       var target = ev.target,
           matchesSelector = this._matchesSelector(target),
+          pathname = target.pathname,
           uri;
 
       if (!matchesSelector) return;
 
       ev.preventDefault();
 
-      uri = target.pathname.replace(this.root, '');
-
       // Some browsers drop the leading slash
       // from an `a` tag's href location
-      if ( uri.charAt(0) !== '/' ) uri = '/' + uri;
+      if ( pathname.charAt(0) !== '/' ) pathname = '/' + pathname;
+
+      uri = pathname.replace(this.root, '');
 
       this.navigate(uri);
     },
