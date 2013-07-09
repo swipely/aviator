@@ -11,7 +11,7 @@ describe('Request', function () {
       var route = '/snap/:uuid/dawg/:section/bro';
 
       beforeEach(function () {
-        subject = navigator.getRequest(
+        subject = navigator.createRequest(
           '/snap/foo/dawg/bar/bro',
           null,
           route
@@ -38,7 +38,7 @@ describe('Request', function () {
       queryString = '?bro=foo&dawg=bar&baz=boo';
 
       beforeEach(function () {
-        subject = navigator.getRequest('/snap', queryString, route);
+        subject = navigator.createRequest('/snap', queryString, route);
       });
 
       it('extracts the query string params', function () {
@@ -53,7 +53,7 @@ describe('Request', function () {
     describe('using the rails convention for arrays in a query', function () {
       beforeEach(function () {
         queryString = '?bros[]=simon&bros[]=barnaby&chickens[]=earl&dinosaurs=fun';
-        subject = navigator.getRequest('/snap', queryString, route);
+        subject = navigator.createRequest('/snap', queryString, route);
       });
 
       it('stores values for the same key in an array', function () {
@@ -72,7 +72,7 @@ describe('Request', function () {
     describe('with an invalid query string key', function () {
       beforeEach(function () {
         queryString = '?bros=keith&bros-george';
-        subject = navigator.getRequest('/snap', queryString, route);
+        subject = navigator.createRequest('/snap', queryString, route);
       });
 
       it('includes the valid params', function () {
@@ -88,7 +88,7 @@ describe('Request', function () {
 
   describe('params', function () {
     beforeEach(function () {
-      subject = navigator.getRequest('/bro/bar', '?baz=boo', '/bro/:foo');
+      subject = navigator.createRequest('/bro/bar', '?baz=boo', '/bro/:foo');
     });
 
     it('is a merge of namedParams and queryParams', function () {

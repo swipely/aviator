@@ -20,7 +20,9 @@ Aviator exposes a small API:
 * `setRoutes`: parses the routes config object
 * `dispatch`: makes the routes go pew pew
 * `navigate`: routes a given path
-* `refresh`: re-dispatches the current uri
+* `refresh`: re-dispatches the current URI
+* `getCurrentURI`: get the currently matched URI
+* `getCurrentRequest`: get the currently matched Request
 
 ### Configuration properties
 

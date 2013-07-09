@@ -381,34 +381,44 @@
     },
 
     /**
-    @method getRouteForURI
+    @method createRouteForURI
     @param {String} uri
     @return {Request}
     **/
-    getRouteForURI: function (uri) {
+    createRouteForURI: function (uri) {
       return new Route(this._routes, uri);
     },
 
     /**
-    @method getRequest
+    @method createRequest
     @param {String} uri
     @param {String|Null} queryString
     @param {String} matchedRoute
     @return {Request}
     **/
-    getRequest: function (uri, queryString, matchedRoute) {
-      return new Request({
+    createRequest: function (uri, queryString, matchedRoute) {
+      this._request = new Request({
         uri: uri,
         queryString: queryString,
         matchedRoute: matchedRoute
       });
+
+      return this._request;
     },
 
     /**
-    @method getURI
+    @method getCurrentRequest
+    @return {Request}
+    **/
+    getCurrentRequest: function () {
+      return this._request;
+    },
+
+    /**
+    @method getCurrentURI
     @return {String}
     **/
-    getURI: function () {
+    getCurrentURI: function () {
       if (this.pushStateEnabled) {
         return location.pathname.replace(this.root, '');
       }
@@ -429,11 +439,11 @@
     @method dispatch
     **/
     dispatch: function () {
-      var uri         = this.getURI(),
-          route       = this.getRouteForURI(uri),
+      var uri         = this.getCurrentURI(),
+          route       = this.createRouteForURI(uri),
           queryString = this.getQueryString(),
           options     = route.options,
-          request     = this.getRequest(
+          request     = this.createRequest(
             uri,
             queryString,
             route.matchedRoute
@@ -639,11 +649,19 @@
     },
 
     /**
-    @method getURI
+    @method getCurrentRequest
     @return {String}
     **/
-    getURI: function () {
-      return this._navigator.getURI();
+    getCurrentRequest: function () {
+      return this._navigator.getCurrentRequest();
+    },
+
+    /**
+    @method getCurrentURI
+    @return {String}
+    **/
+    getCurrentURI: function () {
+      return this._navigator.getCurrentURI();
     },
 
     /**
