@@ -19,7 +19,7 @@ describe('Navigator', function () {
     window.history.replaceState({}, '', '/_SpecRunner.html');
   });
 
-  describe('#getURI', function () {
+  describe('#getCurrentURI', function () {
     var root;
 
     beforeEach(function () {
@@ -39,7 +39,7 @@ describe('Navigator', function () {
         });
 
         it('returns /foo/bar', function () {
-          expect( subject.getURI() ).toBe( '/foo/bar' );
+          expect( subject.getCurrentURI() ).toBe( '/foo/bar' );
         });
       });
     });
@@ -55,9 +55,24 @@ describe('Navigator', function () {
         });
 
         it('returns /foo/bar', function () {
-          expect( subject.getURI() ).toBe( '/foo/bar' );
+          expect( subject.getCurrentURI() ).toBe( '/foo/bar' );
         });
       });
+    });
+  });
+
+  describe('getCurrentRequest', function () {
+    beforeEach(function () {
+      spyOn( subject, 'createRouteForURI' ).andReturn({
+        matchedRoute: '/users/:uuid',
+        actions: [ { method: 'show', target: usersTarget } ],
+        options: [ { leftNav: true }, { showLayout: false } ]
+      });
+      subject.dispatch();
+    });
+
+    it('returns the current request', function () {
+      expect( subject.getCurrentRequest() ).not.toBe( undefined );
     });
   });
 
@@ -236,7 +251,7 @@ describe('Navigator', function () {
 
       describe('when the uri matches a route', function () {
         beforeEach(function () {
-          spyOn( subject, 'getRouteForURI' ).andReturn({
+          spyOn( subject, 'createRouteForURI' ).andReturn({
             matchedRoute: '/users/:uuid',
             actions: [ { method: 'show', target: usersTarget } ],
             options: [ { leftNav: true }, { showLayout: false } ]

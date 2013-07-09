@@ -54,14 +54,25 @@ describe('Aviator', function () {
 
   });
 
-  describe('.getURI', function () {
+  describe('.getCurrentRequest', function () {
     beforeEach(function () {
-      spyOn( _navigator, 'getURI' );
-      subject.getURI();
+      spyOn( _navigator, 'getCurrentRequest' );
+      subject.getCurrentRequest();
     });
 
-    it('calls getURI on the navigator', function () {
-      expect( _navigator.getURI ).toHaveBeenCalled();
+    it('calls getCurrentRequest on the navigator', function () {
+      expect( _navigator.getCurrentRequest ).toHaveBeenCalled();
+    });
+  });
+
+  describe('.getCurrentURI', function () {
+    beforeEach(function () {
+      spyOn( _navigator, 'getCurrentURI' );
+      subject.getCurrentURI();
+    });
+
+    it('calls getCurrentURI on the navigator', function () {
+      expect( _navigator.getCurrentURI ).toHaveBeenCalled();
     });
   });
 

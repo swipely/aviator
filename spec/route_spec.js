@@ -15,7 +15,7 @@ describe('Route', function () {
   describe('given a uri that doesnt match any routes', function () {
     beforeEach(function () {
       uri = '/fartblaherty';
-      subject = navigator.getRouteForURI(uri);
+      subject = navigator.createRouteForURI(uri);
     });
 
     it('doesnt return anything', function () {
@@ -37,7 +37,7 @@ describe('Route', function () {
           }
         };
 
-        subject = navigator.getRouteForURI(uri);
+        subject = navigator.createRouteForURI(uri);
       });
 
       it('returns the correct route properties', function () {
@@ -59,7 +59,7 @@ describe('Route', function () {
           '/:uuid': 'show'
         };
 
-        subject = navigator.getRouteForURI(uri);
+        subject = navigator.createRouteForURI(uri);
       });
 
       it('matches best', function () {
@@ -96,7 +96,7 @@ describe('Route', function () {
           }
         };
 
-        subject = navigator.getRouteForURI(uri);
+        subject = navigator.createRouteForURI(uri);
       });
 
       it('returns the correct route properties', function () {
@@ -117,7 +117,7 @@ describe('Route', function () {
             options: { showLayout: true }
           }
 
-          subject = navigator.getRouteForURI(uri);
+          subject = navigator.createRouteForURI(uri);
         });
 
         it('includes those options in the routes object', function () {
@@ -133,7 +133,7 @@ describe('Route', function () {
               options: { renderBunnies: true }
             };
 
-            subject = navigator.getRouteForURI(uri);
+            subject = navigator.createRouteForURI(uri);
           });
 
           it('merges the options into one object', function () {
@@ -153,7 +153,7 @@ describe('Route', function () {
               options: { showLayout: false }
             };
 
-            subject = navigator.getRouteForURI(uri);
+            subject = navigator.createRouteForURI(uri);
           });
 
           it('gives precedence to the deeper option', function () {
@@ -169,7 +169,7 @@ describe('Route', function () {
               options: { renderCats: true }
             };
 
-            subject = navigator.getRouteForURI(uri);
+            subject = navigator.createRouteForURI(uri);
           });
 
           it('merges the options into one object', function () {
