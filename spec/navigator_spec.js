@@ -211,6 +211,22 @@ describe('Navigator', function () {
           expect(window.history.replaceState).toHaveBeenCalled();
         });
       });
+
+      describe('when called with queryParams', function () {
+        it('serializes the query params into the url', function () {
+          var spy = spyOn( window.history, 'pushState' ).andCallFake(function (a, b, c) {
+            expect( a ).toEqual( 'navigate' );
+            expect( b ).toBe( '' );
+            expect( c ).toBe( '/_SpecRunner.html/foo/bar?baz=boo&userIds[]=2&userIds[]=3' );
+          });
+          subject.navigate('/foo/bar', {
+            queryParams: {
+              baz: 'boo',
+              userIds: [2,3]
+            }
+          });
+        });
+      });
     });
 
     describe('with push state disabled', function () {
