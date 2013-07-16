@@ -13,6 +13,7 @@
   @param {Function} func
   @param {Object} context
   @return {Function}
+  @private
   **/
   var bind = function (func, context) {
     return function () {
@@ -24,7 +25,6 @@
   @method each
   @param {Array} arr
   @param {Function} iterator
-
   @private
   **/
   var each = function (arr, iterator, context) {
@@ -38,6 +38,7 @@
   /**
   @method merge
   @return {Object}
+  @private
   **/
   var merge = function () {
     var result = {},
@@ -60,15 +61,27 @@
   @param {String} eventName
   @param {Function} handler
   @param {Any} [context]
+  @private
   **/
   var addEvent = function (host, eventName, handler, context) {
     host.addEventListener(eventName, bind(handler, context), false);
   };
 
   /**
+  @method isArray
+  @param {Object} o
+  @return {Boolean}
+  @private
+  **/
+  var isArray = function (o) {
+    return Array.isArray(o);
+  };
+
+  /**
   @method isPlainObject
   @param {any} val
   @return {Boolean}
+  @private
   **/
   var isPlainObject = function (val) {
     return (!!val) && (val.constructor === Object);
@@ -78,6 +91,7 @@
   @method isString
   @param {Any} val
   @return {Boolean}
+  @private
   **/
   var isString = function (val) {
     return typeof val === 'string';
@@ -164,10 +178,11 @@
       if ( key.indexOf( '[]' ) !== -1 ) {
         key = key.replace( '[]', '' );
 
-        if ( this.queryParams[key] instanceof Array ) {
+        if (isArray(this.queryParams[key])) {
           this.queryParams[key].push(val);
-        } else {
-          this.queryParams[key] = [ val ];
+        }
+        else {
+          this.queryParams[key] = [val];
         }
       }
       else {
@@ -515,13 +530,20 @@
     navigate: function (uri, options) {
       var options = options || {};
 
+      if (options.queryParams) {
+        uri += this.serializeQueryParams(options.queryParams);
+      }
+
       if (this.pushStateEnabled) {
+        uri = this.root + uri;
+
         if (options.replace) {
-          history.replaceState('navigate', '', this.root + uri);
+          history.replaceState('navigate', '', uri);
         }
         else {
-          history.pushState('navigate', '', this.root + uri);
+          history.pushState('navigate', '', uri);
         }
+
         this.onURIChange();
       }
       else {
@@ -571,6 +593,35 @@
       }
 
       return contains;
+    },
+
+    /**
+    @method serializeQueryParams
+    @param {Object} queryParams
+    @return {String} queryString "?foo=bar&baz[]=boo&baz=[]oob"
+    **/
+    serializeQueryParams: function (queryParams) {
+      var queryString = [],
+          val;
+
+      for (var key in queryParams) {
+        if (queryParams.hasOwnProperty(key)) {
+          val = queryParams[key];
+
+          if (isArray(val)) {
+            each(val, function (item, i) {
+              queryString.push(encodeURIComponent(key) + '[]=' + encodeURIComponent(item));
+            });
+          }
+          else {
+            queryString.push(encodeURIComponent(key) + '=' + encodeURIComponent(val));
+          }
+        }
+      }
+
+      queryString = '?' + queryString.join('&');
+
+      return queryString;
     }
 
   };
@@ -646,6 +697,16 @@
     **/
     navigate: function (uri, options) {
       this._navigator.navigate(uri, options);
+    },
+
+
+    /**
+    @method serializeQueryParams
+    @param {Object} queryParams
+    @return {String} queryString "?foo=bar&baz[]=boo&baz=[]oob"
+    **/
+    serializeQueryParams: function (queryParams) {
+      return this._navigator.serializeQueryParams(queryParams);
     },
 
     /**

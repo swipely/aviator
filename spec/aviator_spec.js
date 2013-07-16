@@ -102,4 +102,18 @@ describe('Aviator', function () {
     });
   });
 
+  describe('.serializeQueryParams', function () {
+    beforeEach(function () {
+      spyOn( _navigator, 'serializeQueryParams' );
+
+      subject.serializeQueryParams({ foo: 'bar' });
+    });
+
+    it('calls serializeQueryParams on the navigator', function () {
+      expect( _navigator.serializeQueryParams ).toHaveBeenCalledWith({
+        foo: 'bar'
+      });
+    });
+  });
+
 });
