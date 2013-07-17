@@ -159,9 +159,10 @@ If you wish to replace the history item instead pushing to the history list
 call `navigate` with the replace option: `Aviator.navigate('/users/all', { replace: true });`
 
 Pass in the `queryParams` option that will be parsed into a queryString and added
-to the navigated uri:
+to the navigated uri: `Aviator.navigate('/users', { queryParams: { filter: [1,2] }});` will navigate to `"/users?filter[]=1&filter[]=2"`
 
-`Aviator.navigate('/users', { queryParams: { filter: [1,2] }});` will navigate to `"/users?filter[]=1&filter[]=2"`
+If you wish to change the url, but not have it call the route target, pass in `{ silent: true }` like so
+`Aviator.navigate('/users', { silent: true });`
 
 ### `Aviator.refresh`
 

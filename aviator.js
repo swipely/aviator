@@ -231,7 +231,7 @@
       var value,
           action = {
             target: routeLevel.target,
-            method:    null
+            method: null
           };
 
       for (var key in routeLevel) {
@@ -367,6 +367,7 @@
   **/
   var Navigator = function () {
     this._routes = null;
+    this._silent = false;
   };
 
   Navigator.prototype = {
@@ -484,7 +485,11 @@
     @method onURIChange
     **/
     onURIChange: function () {
-      this.dispatch();
+      if (!this._silent) {
+        this.dispatch();
+      }
+
+      this._silent = false;
     },
 
     /**
@@ -532,6 +537,10 @@
 
       if (options.queryParams) {
         uri += this.serializeQueryParams(options.queryParams);
+      }
+
+      if (options.silent) {
+        this._silent = true;
       }
 
       if (this.pushStateEnabled) {
