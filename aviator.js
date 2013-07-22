@@ -533,10 +533,20 @@
     @param {Object} [options]
     **/
     navigate: function (uri, options) {
-      var options = options || {};
+      var options = options || {},
+          namedParams = options.namedParams,
+          queryParams = options.queryParams;
 
-      if (options.queryParams) {
-        uri += this.serializeQueryParams(options.queryParams);
+      if (queryParams) {
+        uri += this.serializeQueryParams(queryParams);
+      }
+
+      if (namedParams) {
+        for (var p in namedParams) {
+          if (namedParams.hasOwnProperty(p)) {
+            uri = uri.replace(':' + p, namedParams[p]);
+          }
+        }
       }
 
       if (options.silent) {
