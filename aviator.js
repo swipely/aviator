@@ -544,7 +544,7 @@
       if (namedParams) {
         for (var p in namedParams) {
           if (namedParams.hasOwnProperty(p)) {
-            uri = uri.replace(':' + p, namedParams[p]);
+            uri = uri.replace(':' + p, encodeURIComponent(namedParams[p]));
           }
         }
       }
