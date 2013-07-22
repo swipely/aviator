@@ -236,6 +236,25 @@ describe('Navigator', function () {
       });
     });
 
+    describe('when called with namedParams and a route', function () {
+      beforeEach(function () {
+        spyOn( subject, 'onURIChange' );
+      });
+
+      it('navigates to a uri generate from the route and the namedParams', function () {
+        var spy = spyOn( window.history, 'pushState' ).andCallFake(function (a, b, c) {
+          expect( a ).toEqual( 'navigate' );
+          expect( b ).toBe( '' );
+          expect( c ).toBe( '/_SpecRunner.html/foo/bar/baz' );
+        });
+        subject.navigate('/foo/:named/baz', {
+          namedParams: {
+            named: 'bar'
+          }
+        });
+      });
+    });
+
     describe('when called with queryParams', function () {
       beforeEach(function () {
         spyOn( subject, 'onURIChange' );
