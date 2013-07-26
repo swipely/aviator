@@ -155,8 +155,8 @@
       parts = this.queryString.replace('?','').split('&');
 
       each(parts, function (part) {
-        var key = part.split('=')[0],
-            val = part.split('=')[1];
+        var key = decodeURIComponent( part.split('=')[0] ),
+            val = decodeURIComponent( part.split('=')[1] );
 
         if ( part.indexOf( '=' ) === -1 ) return;
         this._applyQueryParam( key, val );
