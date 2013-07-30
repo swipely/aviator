@@ -493,9 +493,9 @@
     },
 
     /**
-    some browsers fire 'popstate' on the initial page load
+    Some browsers fire 'popstate' on the initial page load
     with a null state object. In those cases we don't want
-    to trigger the uri change
+    to trigger the uri change.
 
     @method onPopState
     @param {Event}
@@ -519,7 +519,7 @@
       ev.preventDefault();
 
       // Some browsers drop the leading slash
-      // from an `a` tag's href location
+      // from an `a` tag's href location.
       if ( pathname.charAt(0) !== '/' ) pathname = '/' + pathname;
 
       uri = pathname.replace(this.root, '');
@@ -583,8 +583,7 @@
     @protected
     **/
     _attachEvents: function () {
-      var pushStateEnabled = this.pushStateEnabled,
-          evt = (pushStateEnabled ? 'popstate' : 'hashchange');
+      var pushStateEnabled = this.pushStateEnabled;
 
       if (pushStateEnabled) {
         addEvent(window, 'popstate', this.onPopState, this);
