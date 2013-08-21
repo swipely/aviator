@@ -1,17 +1,21 @@
-Aviator
-==================
+
+
+| w![Aviator](https://s3.amazonaws.com/swipely-pub/public-images/aviator-logo.png)
+
+Aviator is a front-end router built for modular single page applications. 
+
+You tell Aviator what parts of your application should handle what routes. It sends requests to the right place.
+
+Aviator:
+
+* has a central, declarative place to define your routes
+* doesn't care what framework you use
+* supports push state and hash url routing
+* builds a simple yet rich request object with named and query params
+* supports nesting routes and passing special options to certain urls
+* lets you edit the url to trigger changes or update it silently to keep state
 
 [![Build Status](https://travis-ci.org/swipely/aviator.png)](https://travis-ci.org/swipely/aviator)
-
-Aviator is a single-page front-end router built for modularity.
-
-Routes are configured in one place.
-You specify as many route handlers (targets) as you'd like. The goals are:
-
-* A singleton Navigator object that knows how to dispatch the routes
-* Browser agnostic back/forward navigation and url editing via push state or hash urls
-* Bookmarkable pages
-* A sensible params object for named params and query params
 
 ## API
 
@@ -174,3 +178,8 @@ re-dispatch the current uri
 ## Browser support
 
 Aviator supports modern browsers: IE9+, Chrome, Safari, Firefox, Opera
+
+## Authors
+Simon Højberg (hojberg) and Bart Flaherty (flahertyb)
+
+Logo by Adam Hunter Peck
