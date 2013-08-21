@@ -1,6 +1,5 @@
 
-
-| w![Aviator](https://s3.amazonaws.com/swipely-pub/public-images/aviator-logo.png)
+![Aviator](https://s3.amazonaws.com/swipely-pub/public-images/aviator-logo.png)
 
 Aviator is a front-end router built for modular single page applications. 
 
@@ -14,6 +13,7 @@ Aviator:
 * builds a simple yet rich request object with named and query params
 * supports nesting routes and passing special options to certain urls
 * lets you edit the url to trigger changes or update it silently to keep state
+
 
 [![Build Status](https://travis-ci.org/swipely/aviator.png)](https://travis-ci.org/swipely/aviator)
 
