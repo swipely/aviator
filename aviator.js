@@ -493,15 +493,11 @@
     },
 
     /**
-    Some browsers fire 'popstate' on the initial page load
-    with a null state object. In those cases we don't want
-    to trigger the uri change.
-
     @method onPopState
     @param {Event}
     **/
     onPopState: function (ev) {
-      if (ev.state) this.onURIChange();
+      this.onURIChange();
     },
 
     /**
