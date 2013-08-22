@@ -1,4 +1,3 @@
-
 ![Aviator](https://s3.amazonaws.com/swipely-pub/public-images/aviator-logo.png)
 
 Aviator is a front-end router built for modular single page applications. 
@@ -180,6 +179,6 @@ re-dispatch the current uri
 Aviator supports modern browsers: IE9+, Chrome, Safari, Firefox, Opera
 
 ## Authors
-Simon Højberg (hojberg) and Bart Flaherty (flahertyb)
+Simon Højberg (hojberg), Bart Flaherty (flahertyb), and Barnaby Claydon (barnabyc)
 
 Logo by Adam Hunter Peck
