@@ -182,6 +182,32 @@ describe('Route', function () {
       });
     });
 
+    describe('with dashes in the last fragment', function () {
+      beforeEach(function () {
+        uri = '/calendar/2013-08';
+
+        navigator._routes = {
+          '/calendar': {
+            target: usersTarget,
+            '/:date': {
+              target: usersTarget,
+              '/': 'show'
+            }
+          }
+        };
+
+        subject = navigator.createRouteForURI(uri);
+      });
+
+      it('returns the correct route properties', function () {
+        expect( subject.matchedRoute ).toBe( '/calendar/:date' )
+        expect( subject.actions ).toEqual(
+          [{ method: 'show', target: usersTarget }]
+        );
+        expect( subject.options ).toEqual( {} );
+      });
+    });
+
   });
 
 });
