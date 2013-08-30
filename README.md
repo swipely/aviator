@@ -1,6 +1,6 @@
 ![Aviator](https://s3.amazonaws.com/swipely-pub/public-images/aviator-logo.png)
 
-Aviator is a front-end router built for modular single page applications. 
+Aviator is a front-end router built for modular single page applications.
 
 You tell Aviator what parts of your application should handle what routes. It sends requests to the right place.
 
@@ -177,6 +177,20 @@ re-dispatch the current uri
 ## Browser support
 
 Aviator supports modern browsers: IE9+, Chrome, Safari, Firefox, Opera
+
+## Tests
+
+Aviator uses Jasmine specs. They can be run from the cli:
+
+```
+grunt jasmine:all
+```
+
+Or in your browser via a simple http server:
+```
+grunt jasmine:all:build
+open http://localhost:8000/_SpecRunner.html && python -m SimpleHTTPServer
+```
 
 ## Authors
 Simon Højberg (hojberg), Bart Flaherty (flahertyb), and Barnaby Claydon (barnabyc)

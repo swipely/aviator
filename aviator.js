@@ -298,12 +298,15 @@
     **/
     updateURI: function (fragment) {
       var uri = this.uri,
+          split,
           match;
 
       if (fragment !== '/' && fragment !== '/*') {
-        match = uri.match(/(\/\w+)\/?/);
+        split = uri.split('/');
+        match = split[1];
+
         if (match) {
-          this.uri = uri.replace(match[1], '');
+          this.uri = uri.replace('/' + match, '');
         }
       }
     },
