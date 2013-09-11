@@ -1,11 +1,12 @@
 {
-  "name": "navigatorade",
-  "version": "0.0.1",
+  "name": "aviator",
+  "version": "0.3.5",
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-watch": "0.2.0",
     "grunt-contrib-jasmine": "0.4.2",
-    "grunt-cli": "0.1.9"
+    "grunt-cli": "0.1.9",
+    "grunt-browserify": "~1.2.0"
   },
   "scripts": {
     "test": "./node_modules/grunt-cli/bin/grunt jasmine --verbose"
