@@ -15,6 +15,7 @@ var Route = function (routes, uri) {
   this.uri          = uri;
   this.matchedRoute = '';
   this.actions      = [];
+  this.exits        = [];
   this.options      = {};
 
   this.match(routes);
@@ -56,8 +57,19 @@ Route.prototype = {
               }
               else {
                 action.method = value.method;
-                this.mergeOptions(value.options);
+
+                if (value.exit) {
+                  this.exits.unshift({
+                    method: value.exit,
+                    target: routeLevel.target
+                  });
+                }
+
+                if (value.options) {
+                  this.mergeOptions(value.options);
+                }
               }
+
               this.actions.push(action);
             }
           }
@@ -155,7 +167,7 @@ Route.prototype = {
   @return {Boolean}
   **/
   isActionDescriptor: function (val) {
-    return isString(val) || isPlainObject(val) && val.method && val.options;
+    return isString(val) || isPlainObject(val) && val.method;
   },
 
   /**

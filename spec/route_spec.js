@@ -70,6 +70,44 @@ describe('Route', function () {
 
     });
 
+    describe('with exits and multiple matches', function () {
+      var appTarget     = { init: function () {}, exit: function () {} },
+          userTarget    = { edit: function () {}, show: function () {}, exitShow: function () {} },
+          storesTarget  = { index: function () {} };
+
+      beforeEach(function () {
+        uri = '/users/foo';
+
+        navigator._routes = {
+          target: appTarget,
+          '/*': { method: 'init', exit: 'exit' },
+          '/users': {
+            target: usersTarget,
+            '/': 'index',
+            '/:uuid': {
+              target: userTarget,
+              '/': { method: 'show', exit: 'exitShow' },
+              '/edit': 'edit'
+            }
+          },
+          '/stores': {
+            target: storesTarget,
+            '/': 'index'
+          }
+        };
+
+        subject = navigator.createRouteForURI(uri);
+      });
+
+      it('collects all exit functions', function () {
+        expect( subject.exits ).toEqual([
+          { method: 'exitShow', target: userTarget },
+          { method: 'exit', target: appTarget }
+        ]);
+      });
+
+    });
+
     describe('with multiple matches', function () {
       var appTarget     = { init: function () {} },
           userTarget    = { edit: function () {}, show: function () {} },

@@ -17,8 +17,9 @@ var location  = window.location,
 @private
 **/
 var Navigator = function () {
-  this._routes = null;
-  this._silent = false;
+  this._routes  = null;
+  this._exits   = [];
+  this._silent  = false;
 };
 
 Navigator.prototype = {
@@ -109,27 +110,13 @@ Navigator.prototype = {
     var uri         = this.getCurrentURI(),
         route       = this.createRouteForURI(uri),
         queryString = this.getQueryString(),
-        options     = route.options,
-        request     = this.createRequest(
-          uri,
-          queryString,
-          route.matchedRoute
-        );
+        request     = this.createRequest(uri, queryString, route.matchedRoute);
 
-    each(route.actions, function (action) {
-      var target = action.target,
-          method = action.method;
+    this._invokeExits();
+    this._invokeActions(route.actions, request, route.options);
 
-      if (!(method in target)) {
-        throw new Error("Can't call " + method + ' on target for uri ' + request.uri);
-      }
-
-      target[method].call(
-        target,
-        request,
-        options
-      );
-    });
+    // collect exits of the current matching route
+    this._exits = route.exits;
   },
 
   /**
@@ -262,6 +249,50 @@ Navigator.prototype = {
     }
 
     return contains;
+  },
+
+  /**
+  pop of any exits function and invoke them
+
+  @method _invokeExits
+  @protected
+  **/
+  _invokeExits: function () {
+    var exit, target, method;
+
+    while(this._exits.length) {
+      exit = this._exits.pop(),
+      target = exit.target,
+      method = exit.method;
+
+      if (!(method in target)) {
+        throw new Error("Can't call exit " + method + ' on target for uri ' + request.uri);
+      }
+
+      target[method].call(target);
+    }
+  },
+
+  /**
+  invoke all actions with request and options
+
+  @method _invokeActions
+  @param {Array[Object]} actions
+  @param {Request} request
+  @param {Object} options
+  @protected
+  **/
+  _invokeActions: function (actions, request, options) {
+    each(actions, function (action) {
+      var target = action.target,
+          method = action.method;
+
+      if (!(method in target)) {
+        throw new Error("Can't call action " + method + ' on target for uri ' + request.uri);
+      }
+
+      target[method].call(target, request, options);
+    });
   },
 
   /**
