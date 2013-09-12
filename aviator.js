@@ -638,9 +638,12 @@ var Route = function (routes, uri) {
   this.uri          = uri;
   this.matchedRoute = '';
   this.actions      = [];
+  this.exits        = [];
   this.options      = {};
 
   this.match(routes);
+
+  this.exits = this.exits.reverse();
 
   this.uri = uri;
 };
@@ -679,8 +682,19 @@ Route.prototype = {
               }
               else {
                 action.method = value.method;
-                this.mergeOptions(value.options);
+
+                if (value.exit) {
+                  this.exits.push({
+                    method: value.exit,
+                    target: routeLevel.target
+                  });
+                }
+
+                if (value.options) {
+                  this.mergeOptions(value.options);
+                }
               }
+
               this.actions.push(action);
             }
           }
@@ -778,7 +792,7 @@ Route.prototype = {
   @return {Boolean}
   **/
   isActionDescriptor: function (val) {
-    return isString(val) || isPlainObject(val) && val.method && val.options;
+    return isString(val) || isPlainObject(val) && val.method;
   },
 
   /**
