@@ -4,7 +4,7 @@ describe('Navigator', function () {
 
   beforeEach(function () {
     subject = Aviator._navigator;
-    usersTarget = { index: function () {}, show: function () {} };
+    usersTarget = { index: function () {}, show: function () {}, exitIndex: function () {} };
 
     routes = {
       '/users': {
@@ -65,8 +65,9 @@ describe('Navigator', function () {
     beforeEach(function () {
       spyOn( subject, 'createRouteForURI' ).andReturn({
         matchedRoute: '/users/:uuid',
-        actions: [ { method: 'show', target: usersTarget } ],
-        options: [ { leftNav: true }, { showLayout: false } ]
+        exits:    [],
+        actions:  [ { method: 'show', target: usersTarget } ],
+        options:  [ { leftNav: true }, { showLayout: false } ]
       });
       subject.dispatch();
     });
@@ -305,18 +306,28 @@ describe('Navigator', function () {
         beforeEach(function () {
           spyOn( subject, 'createRouteForURI' ).andReturn({
             matchedRoute: '/users/:uuid',
-            actions: [ { method: 'show', target: usersTarget } ],
-            options: [ { leftNav: true }, { showLayout: false } ]
+            exits:    [],
+            actions:  [ { method: 'show', target: usersTarget } ],
+            options:  [ { leftNav: true }, { showLayout: false } ]
           });
 
           window.history.replaceState({}, '', '/users');
           spyOn( usersTarget, 'show' );
+          spyOn( usersTarget, 'exitIndex' );
+
+          subject._previousExits = [
+            { method: 'exitIndex', target: usersTarget }
+          ];
 
           subject.dispatch();
         });
 
         it('calls the target method', function () {
           expect( usersTarget.show ).toHaveBeenCalled();
+        });
+
+        it('calls the previous target exit method', function () {
+          expect( usersTarget.exitIndex ).toHaveBeenCalled();
         });
       });
     });

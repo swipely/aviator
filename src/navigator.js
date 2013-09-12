@@ -18,6 +18,7 @@ var location  = window.location,
 **/
 var Navigator = function () {
   this._routes = null;
+  this._previousExits = [];
   this._silent = false;
 };
 
@@ -110,26 +111,31 @@ Navigator.prototype = {
         route       = this.createRouteForURI(uri),
         queryString = this.getQueryString(),
         options     = route.options,
-        request     = this.createRequest(
-          uri,
-          queryString,
-          route.matchedRoute
-        );
+        request     = this.createRequest(uri, queryString, route.matchedRoute);
+
+    each(this._previousExits, function (exit) {
+      var target = exit.target,
+          method = exit.method;
+
+      if (!(method in target)) {
+        throw new Error("Can't call exit " + method + ' on target for uri ' + request.uri);
+      }
+
+      target[method].call(target);
+    });
 
     each(route.actions, function (action) {
       var target = action.target,
           method = action.method;
 
       if (!(method in target)) {
-        throw new Error("Can't call " + method + ' on target for uri ' + request.uri);
+        throw new Error("Can't call action " + method + ' on target for uri ' + request.uri);
       }
 
-      target[method].call(
-        target,
-        request,
-        options
-      );
+      target[method].call(target, request, options);
     });
+
+    this._previousExits = route.exits;
   },
 
   /**
