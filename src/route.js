@@ -20,8 +20,6 @@ var Route = function (routes, uri) {
 
   this.match(routes);
 
-  this.exits = this.exits.reverse();
-
   this.uri = uri;
 };
 
@@ -61,7 +59,7 @@ Route.prototype = {
                 action.method = value.method;
 
                 if (value.exit) {
-                  this.exits.push({
+                  this.exits.unshift({
                     method: value.exit,
                     target: routeLevel.target
                   });

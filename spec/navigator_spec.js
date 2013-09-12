@@ -315,7 +315,7 @@ describe('Navigator', function () {
           spyOn( usersTarget, 'show' );
           spyOn( usersTarget, 'exitIndex' );
 
-          subject._previousExits = [
+          subject._exits = [
             { method: 'exitIndex', target: usersTarget }
           ];
 
