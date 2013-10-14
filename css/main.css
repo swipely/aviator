@@ -1,0 +1,102 @@
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, serif;
+  background: #fff;
+  padding: 0;
+  color: #555;
+  margin: 0;
+  font-size: 18px;
+}
+
+h1, h2, h3, h5 {
+  margin: 0;
+}
+
+ul, ol {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: #3067ae;
+  transition: all 0.2s;
+}
+
+a:hover,
+a:active {
+  color: #4796fb;
+}
+
+code {
+  background: #eee;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 14px;
+  line-height: 1.3em;
+  font-family: 'Droid Sans Mono', 'Courier New', monospace;
+  border: 1px solid #ddd;
+}
+
+.cf:after {
+  clear:both; content:"."; display: block; height:0; visibility: hidden; line-height:0; font-size:0;
+}
+
+.highlight code {
+  display: block;
+  padding: 5px 10px;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.column {
+  width: 600px;
+  margin: auto;
+}
+
+header {
+  background: #8CA9C3;
+  padding: 70px 0;
+}
+
+header img {
+  float: left;
+}
+
+header .details {
+  position: relative;
+  float: left;
+  margin-left: 30px;
+  margin-top: 22px;
+}
+
+header .ctas {
+  margin-top: 10px;
+}
+
+header h1 {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 72px;
+  line-height: 72px;
+  text-transform: uppercase;
+  font-family: 'Limelight', sans-serif;
+}
+
+header h2 {
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 14px;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+}
+
+.content {
+  padding: 70px 0;
+}
+
+.button {
+  display: inline-block;
+  text-decoration: none;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 10px 15px;
+  border-radius: 3px;
+}

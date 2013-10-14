@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'>
+    <title>Aviator by Swipely</title>
+
+    <link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/normalize/2.1.0/normalize.css'></link>
+    <link rel='stylesheet' type='text/css' href='//cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css'></link>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans+Mono|Droid+Serif:400,700,400italic|Limelight|Poiret+One' rel='stylesheet' type='text/css'>
+    <link rel='stylesheet' type='text/css' href='/css/main.css'></link>
+    <link rel='stylesheet' type='text/css' href='/css/syntax.css'></link>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class='column cf'>
+          <img src='/img/aviator.png' width=140/>
+          <div class='details'>
+            <h1>Aviator</h1>
+            <h2>Single Page Application Routing</h2>
+            <div class='ctas'>
+              <a href='https://github.com/swipely/aviator' class='button'>
+                <i class='icon-github'></i> View on GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+      <article class='content column'>
+        <h1>Get started With Aviator</h1>
+
+<p>Add aviator to your project</p>
+<div class="highlight"><pre><code class="html language-html" data-lang="html"><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;.../aviator.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre></div>
+<p>If you prefer to host it yourself you can download from <a href='https://github.com/swipely/aviator'>GitHub</a></p>
+
+<p>Create a route target (receivers of route changes)</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">usersTarget</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">show</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;users show action&#39;</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>Add all routes to be handled by Aviator</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">Aviator</span><span class="p">.</span><span class="nx">setRoutes</span><span class="p">({</span>
+  <span class="s1">&#39;/users&#39;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">target</span><span class="o">:</span> <span class="nx">usersTarget</span><span class="p">,</span>
+    <span class="s1">&#39;/:id&#39;</span><span class="o">:</span> <span class="s1">&#39;show&#39;</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+<p>Start routing with Aviator</p>
+<div class="highlight"><pre><code class="javascript language-javascript" data-lang="javascript"><span class="nx">Aviator</span><span class="p">.</span><span class="nx">dispatch</span><span class="p">();</span>
+</code></pre></div>
+<p>Thats it <i class='icon-smiley'></i></p>
+
+      </article>
+    </main>
+  </body>
+</html>
