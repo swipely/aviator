@@ -148,7 +148,7 @@ Navigator.prototype = {
         pathname = target.pathname,
         uri;
 
-    if (!matchesSelector) return;
+    if (!matchesSelector || ev.metaKey || ev.ctrlKey) return;
 
     ev.preventDefault();
 

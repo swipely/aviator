@@ -222,10 +222,6 @@ var each      = helpers.each,
     addEvent  = helpers.addEvent,
     isArray   = helpers.isArray;
 
-// Convienience aliases
-var location  = window.location,
-    history   = window.history;
-
 /**
 @class Navigator
 @constructor
@@ -327,7 +323,7 @@ Navigator.prototype = {
         queryString = this.getQueryString(),
         request     = this.createRequest(uri, queryString, route.matchedRoute);
 
-    this._invokeExits();
+    this._invokeExits(request);
     this._invokeActions(route.actions, request, route.options);
 
     // collect exits of the current matching route
@@ -367,7 +363,7 @@ Navigator.prototype = {
         pathname = target.pathname,
         uri;
 
-    if (!matchesSelector) return;
+    if (!matchesSelector || ev.metaKey || ev.ctrlKey) return;
 
     ev.preventDefault();
 
@@ -470,9 +466,10 @@ Navigator.prototype = {
   pop of any exits function and invoke them
 
   @method _invokeExits
+  @param {Request} request
   @protected
   **/
-  _invokeExits: function () {
+  _invokeExits: function (request) {
     var exit, target, method;
 
     while(this._exits.length) {
@@ -524,7 +521,7 @@ Navigator.prototype = {
         val = queryParams[key];
 
         if (isArray(val)) {
-          each(val, function (item, i) {
+          each(val, function (item) {
             queryString.push(encodeURIComponent(key) + '[]=' + encodeURIComponent(item));
           });
         }
