@@ -212,6 +212,59 @@ describe('Navigator', function () {
           expect(window.history.replaceState).toHaveBeenCalled();
         });
       });
+
+      describe('removing the uri root', function () {
+        var uri;
+
+        describe('when the root is not present', function () {
+          beforeEach(function () {
+            subject.root = '/bonsai';
+
+            uri = subject._removeURIRoot(
+              '/foo/bar/kittens'
+            );
+          });
+
+          it('it does not change the uri', function () {
+            expect( uri ).toBe(
+              '/foo/bar/kittens'
+            );
+          });
+        });
+
+        describe('when the root is present but not at the begining', function () {
+          beforeEach(function () {
+            subject.root = '/bar';
+
+            uri = subject._removeURIRoot(
+              '/foo/bar/kittens'
+            );
+          });
+
+          it('it does not change the uri', function () {
+            expect( uri ).toBe(
+              '/foo/bar/kittens'
+            );
+          });
+        });
+
+        describe('when the root is present and is at the begining', function () {
+          beforeEach(function () {
+            subject.root = '/foo';
+
+            uri = subject._removeURIRoot(
+              '/foo/bar/kittens'
+            );
+          });
+
+          it('it removes the root', function () {
+            expect( uri ).toBe(
+              '/bar/kittens'
+            );
+          });
+        });
+
+      });
     });
 
     describe('with push state disabled', function () {
