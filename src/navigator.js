@@ -84,7 +84,7 @@ Navigator.prototype = {
   **/
   getCurrentURI: function () {
     if (this.pushStateEnabled) {
-      return location.pathname.replace(this.root, '');
+      return this._removeURIRoot(location.pathname);
     }
     else {
       return location.hash.replace('#', '');
@@ -188,6 +188,8 @@ Navigator.prototype = {
     }
 
     if (this.pushStateEnabled) {
+      uri = this._removeURIRoot(uri);
+
       uri = this.root + uri;
 
       if (options.replace) {
@@ -290,6 +292,18 @@ Navigator.prototype = {
 
       target[method].call(target, request, options);
     });
+  },
+
+
+  /**
+  @method _removeURIRoot
+  @param {String} uri '/partners/s/foo-bar'
+  @return {String} uri '/s/foo-bar'
+  **/
+  _removeURIRoot: function (uri) {
+    var rootRegex = new RegExp('^' + this.root);
+
+    return uri.replace(rootRegex, '');
   },
 
   /**
