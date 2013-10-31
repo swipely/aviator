@@ -1,6 +1,6 @@
 {
   "name": "aviator",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-watch": "0.2.0",
