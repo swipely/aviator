@@ -360,12 +360,25 @@ Navigator.prototype = {
   onClick: function (ev) {
     var target = ev.target,
         matchesSelector = this._matchesSelector(target),
-        pathname = target.pathname,
+        pathname,
         uri;
 
-    if (!matchesSelector || ev.metaKey || ev.ctrlKey) return;
+    if (ev.metaKey || ev.ctrlKey) return;
+
+    // Sub optimal. It itererates through all ancestors on every single click :/
+    while (target) {
+      if (this._matchesSelector(target)) {
+        break;
+      }
+
+      target = target.parentNode;
+    }
+
+    if (!target) return;
 
     ev.preventDefault();
+
+    pathname = target.pathname;
 
     // Some browsers drop the leading slash
     // from an `a` tag's href location.
