@@ -12,7 +12,7 @@ describe('Request', function () {
 
       beforeEach(function () {
         subject = navigator.createRequest(
-          '/snap/foo/dawg/bar/bro',
+          '/snap/foo/dawg/bar%20noo%20gan/bro',
           null,
           route
         );
@@ -21,7 +21,7 @@ describe('Request', function () {
       it('extracts the named params', function () {
         expect( subject.namedParams ).toEqual({
           uuid: 'foo',
-          section: 'bar'
+          section: 'bar noo gan'
         });
       });
     });
