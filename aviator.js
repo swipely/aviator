@@ -607,7 +607,7 @@ Request.prototype = {
       if (part.indexOf(':') === 0) {
         key = part.replace(':', '');
 
-        params[key] = uriParts[i];
+        params[key] = decodeURIComponent( uriParts[i] );
       }
     });
 
