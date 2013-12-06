@@ -208,6 +208,24 @@ window.Aviator = {
   **/
   refresh: function () {
     this._navigator.refresh();
+  },
+
+  /**
+  @method rewriteRouteTo
+  **/
+  rewriteRouteTo: function (newRoute) {
+    var target = {
+      rewrite: function (request) {
+        Aviator.navigate(newRoute, {
+          namedParams: request.namedParams
+        });
+      }
+    };
+
+    return {
+      target: target,
+      '/': 'rewrite'
+    };
   }
 
 };
