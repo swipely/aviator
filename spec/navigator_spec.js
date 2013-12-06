@@ -391,16 +391,16 @@ describe('Navigator', function () {
 
     beforeEach(function () {
       target = {
-        actionOne: jasmine.createSpy(),
-        actionTwo: jasmine.createSpy(),
-        actionThree: jasmine.createSpy(),
-        actionFour: jasmine.createSpy()
+        actionOne: jasmine.createSpy('action one'),
+        actionTwo: jasmine.createSpy('action two'),
+        actionThree: jasmine.createSpy('action three'),
+        actionFour: jasmine.createSpy('action four')
       };
 
       request = {};
       options = {};
 
-      actions = [
+      subject._actions = [
         { target: target, method: 'actionOne' },
         { target: target, method: 'actionTwo' },
         { target: target, method: 'actionThree' },
@@ -409,7 +409,7 @@ describe('Navigator', function () {
     });
 
     it('invokes all actions with the request and options', function () {
-      subject._invokeActions(actions, request, options);
+      subject._invokeActions(request, options);
 
       expect( target.actionOne ).toHaveBeenCalledWith(request, options);
       expect( target.actionTwo ).toHaveBeenCalledWith(request, options);
@@ -427,7 +427,7 @@ describe('Navigator', function () {
       });
 
       it('halts all other action invocations', function () {
-        subject._invokeActions(actions, request, options);
+        subject._invokeActions(request, options);
 
         expect( target.actionThree ).not.toHaveBeenCalled();
         expect( target.actionFour ).not.toHaveBeenCalled();
