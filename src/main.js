@@ -116,7 +116,8 @@ window.Aviator = {
     var target = {
       rewrite: function (request) {
         Aviator.navigate(newRoute, {
-          namedParams: request.namedParams
+          namedParams: request.namedParams,
+          replace: true
         });
       }
     };
