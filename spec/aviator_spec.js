@@ -133,7 +133,10 @@ describe('Aviator', function () {
 
         expect( Aviator.navigate ).toHaveBeenCalledWith(
           '/foo/bar',
-          { namedParams: { baz: 'boo' } }
+          {
+            namedParams: { baz: 'boo' },
+            replace: true
+          }
         );
 
       });

@@ -219,7 +219,8 @@ window.Aviator = {
     var target = {
       rewrite: function (request) {
         Aviator.navigate(newRoute, {
-          namedParams: request.namedParams
+          namedParams: request.namedParams,
+          replace: true
         });
       }
     };
@@ -424,7 +425,6 @@ Navigator.prototype = {
 
     // halt any previous action invocations
     this._actions = [];
-    console.log('navigate actions', this._actions.length);
 
     if (queryParams) {
       uri += this.serializeQueryParams(queryParams);
@@ -538,8 +538,6 @@ Navigator.prototype = {
   _invokeActions: function (request, options) {
     var action, target, method;
 
-    console.log('_invokeActions');
-
     while (this._actions.length) {
       action = this._actions.shift();
       target = action.target;
@@ -549,7 +547,6 @@ Navigator.prototype = {
         throw new Error("Can't call action " + method + ' on target for uri ' + request.uri);
       }
 
-      console.log('calling method', method);
       target[method].call(target, request, options);
     }
   },
