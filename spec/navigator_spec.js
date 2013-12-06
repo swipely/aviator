@@ -386,4 +386,53 @@ describe('Navigator', function () {
     });
   });
 
+  describe('#_invokeActions', function () {
+    var target, request, options, actions;
+
+    beforeEach(function () {
+      target = {
+        actionOne: jasmine.createSpy(),
+        actionTwo: jasmine.createSpy(),
+        actionThree: jasmine.createSpy(),
+        actionFour: jasmine.createSpy()
+      };
+
+      request = {};
+      options = {};
+
+      actions = [
+        { target: target, method: 'actionOne' },
+        { target: target, method: 'actionTwo' },
+        { target: target, method: 'actionThree' },
+        { target: target, method: 'actionFour' }
+      ];
+    });
+
+    it('invokes all actions with the request and options', function () {
+      subject._invokeActions(actions, request, options);
+
+      expect( target.actionOne ).toHaveBeenCalledWith(request, options);
+      expect( target.actionTwo ).toHaveBeenCalledWith(request, options);
+      expect( target.actionThree ).toHaveBeenCalledWith(request, options);
+      expect( target.actionFour ).toHaveBeenCalledWith(request, options);
+    });
+
+    describe('when an action calls #navigate', function () {
+      beforeEach(function () {
+        spyOn( subject, 'onURIChange');
+
+        target.actionTwo = function () {
+          subject.navigate('/foo/bar');
+        };
+      });
+
+      it('halts all other action invocations', function () {
+        subject._invokeActions(actions, request, options);
+
+        expect( target.actionThree ).not.toHaveBeenCalled();
+        expect( target.actionFour ).not.toHaveBeenCalled();
+      });
+    });
+  });
+
 });
