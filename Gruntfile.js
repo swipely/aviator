@@ -31,8 +31,8 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('test', ['jasmine']);
   grunt.registerTask('build', ['browserify']);
+  grunt.registerTask('test', ['build', 'jasmine']);
 
   grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-browserify');

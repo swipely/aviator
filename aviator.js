@@ -212,6 +212,8 @@ window.Aviator = {
 
   /**
   @method rewriteRouteTo
+  @param {String} newRoute
+  @return {Object}
   **/
   rewriteRouteTo: function (newRoute) {
     var target = {
@@ -342,7 +344,10 @@ Navigator.prototype = {
         request     = this.createRequest(uri, queryString, route.matchedRoute);
 
     this._invokeExits(request);
-    this._invokeActions(route.actions, request, route.options);
+
+    // temporary action array that can be halted
+    this._actions = route.actions;
+    this._invokeActions(request, route.options);
 
     // collect exits of the current matching route
     this._exits = route.exits;
@@ -417,7 +422,9 @@ Navigator.prototype = {
         namedParams = options.namedParams,
         queryParams = options.queryParams;
 
-    this._haltActionInvocations = true;
+    // halt any previous action invocations
+    this._actions = [];
+    console.log('navigate actions', this._actions.length);
 
     if (queryParams) {
       uri += this.serializeQueryParams(queryParams);
@@ -508,8 +515,8 @@ Navigator.prototype = {
     var exit, target, method;
 
     while(this._exits.length) {
-      exit = this._exits.pop(),
-      target = exit.target,
+      exit = this._exits.pop();
+      target = exit.target;
       method = exit.method;
 
       if (!(method in target)) {
@@ -524,28 +531,25 @@ Navigator.prototype = {
   invoke all actions with request and options
 
   @method _invokeActions
-  @param {Array[Object]} actions
   @param {Request} request
   @param {Object} options
   @protected
   **/
-  _invokeActions: function (actions, request, options) {
-    var target, method;
+  _invokeActions: function (request, options) {
+    var action, target, method;
 
-    this._haltActionInvocations = false;
+    console.log('_invokeActions');
 
-    for (var i = 0; i < actions.length; i++ ){
-      if (this._haltActionInvocations) {
-        break;
-      }
+    while (this._actions.length) {
+      action = this._actions.shift();
+      target = action.target;
+      method = action.method;
 
-      target = actions[i].target;
-      method = actions[i].method;
-
-      if (!(method in target)) {
+     if (!(method in target)) {
         throw new Error("Can't call action " + method + ' on target for uri ' + request.uri);
       }
 
+      console.log('calling method', method);
       target[method].call(target, request, options);
     }
   },
