@@ -116,4 +116,28 @@ describe('Aviator', function () {
     });
   });
 
+  describe('.rewriteRouteTo', function () {
+    var target;
+
+    beforeEach(function () {
+      target = subject.rewriteRouteTo('/foo/bar').target;
+    });
+
+    describe('the returned route target action', function () {
+      beforeEach(function () {
+        spyOn( Aviator, 'navigate' );
+      });
+
+      it('calls Aviator.navigate with the given route', function () {
+        target.rewrite({ namedParams: { baz: 'boo' } });
+
+        expect( Aviator.navigate ).toHaveBeenCalledWith(
+          '/foo/bar',
+          { namedParams: { baz: 'boo' } }
+        );
+
+      });
+    });
+  });
+
 });
