@@ -399,6 +399,8 @@ Navigator.prototype = {
         namedParams = options.namedParams,
         queryParams = options.queryParams;
 
+    this._haltActionInvocations = true;
+
     if (queryParams) {
       uri += this.serializeQueryParams(queryParams);
     }
@@ -510,18 +512,25 @@ Navigator.prototype = {
   @protected
   **/
   _invokeActions: function (actions, request, options) {
-    each(actions, function (action) {
-      var target = action.target,
-          method = action.method;
+    var target, method;
+
+    this._haltActionInvocations = false;
+
+    for (var i = 0; i < actions.length; i++ ){
+      if (this._haltActionInvocations) {
+        break;
+      }
+
+      target = actions[i].target;
+      method = actions[i].method;
 
       if (!(method in target)) {
         throw new Error("Can't call action " + method + ' on target for uri ' + request.uri);
       }
 
       target[method].call(target, request, options);
-    });
+    }
   },
-
 
   /**
   @method _removeURIRoot
