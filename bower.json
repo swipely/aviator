@@ -1,6 +1,6 @@
 {
   "name": "aviator",
-  "version": "0.3.11",
+  "version": "0.3.12",
   "main": "aviator.js",
   "ignore": [
     "**/.*",
