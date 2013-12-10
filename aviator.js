@@ -720,6 +720,7 @@ After attempting to match a uri to the Routes map
 var Route = function (routes, uri) {
   this.uri          = uri;
   this.matchedRoute = '';
+  this.targets      = [];
   this.actions      = [];
   this.exits        = [];
   this.options      = {};
@@ -739,11 +740,20 @@ Route.prototype = {
   @return {Object}
   **/
   match: function (routeLevel) {
-    var value,
-        action = {
-          target: routeLevel.target,
-          method: null
-        };
+    var value, action, target;
+
+    if (routeLevel.target) {
+      this.targets.push(routeLevel.target);
+    }
+
+    if (this.targets.length) {
+      target = this.targets[this.targets.length - 1];
+    }
+
+    action = {
+      target: target,
+      method: null
+    };
 
     for (var key in routeLevel) {
       if (routeLevel.hasOwnProperty(key)) {
