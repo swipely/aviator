@@ -49,6 +49,32 @@ describe('Route', function () {
       });
     });
 
+    describe('with no target on the route level', function () {
+      beforeEach(function () {
+        uri = '/users/foo/edit';
+
+        navigator._routes = {
+          '/users': {
+            target: usersTarget,
+            '/': 'index',
+            '/:uuid': {
+              '/': 'show',
+              '/edit': 'edit'
+            }
+          }
+        };
+
+        subject = navigator.createRouteForURI(uri);
+      });
+
+      it('uses the parent level target', function () {
+        expect( subject.matchedRoute ).toBe( '/users/:uuid/edit' )
+        expect( subject.actions ).toEqual(
+          [{ method: 'edit', target: usersTarget }]
+        );
+      });
+    });
+
     describe('matching a route with a /: on the same route level', function () {
       beforeEach(function () {
         uri = '/best';
