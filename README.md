@@ -69,7 +69,7 @@ Aviator.setRoutes({
 ```
 
 In the above case, hitting `"/campaigns/add"` would call the add method on
-the on the MarketingTarget.
+the on the CampaignsTarget.
 
 The special key `/*` indicates a method on that target to be called
 before any other route handler methods on that level and any
@@ -128,6 +128,26 @@ Upon hitting `"/marketing/reputation"`,
 `marketingTarget#show` and `reputationTarget#show`
 will be called in that order, and both will be passed the options object.
 
+#### namedParams
+
+```javascript
+Aviator.setRoutes({
+  '/users': {
+    target: UsersTarget,
+      '/:id': {
+        '/edit': 'edit'
+      }
+    }
+  }
+});
+```
+
+The above config will match urls like '/users/32/edit' or '/users/hojberg/edit'
+and pass in '32' or 'hojberg' respectively as a param in the Request's
+namedParam hash (first argument passed to actions). Access them like so:
+`request.namedParams.id` in the edit function of UsersTarget, where `request`
+is the first argument.
+
 ### `Aviator.dispatch`
 
 After having setup routes via `Aviator.setRoutes`,
@@ -140,6 +160,14 @@ route events once.
 Dispatch also sets up a click event handler that will pick up links matching
 the selector that was set in `linkSelector` and route to its `href`
 attribute instead of forcing a full page load.
+
+### What an action on a target receives
+
+When a action is called on the target, it is passed a Request object and a
+simple options hash. The Request object includes `namedParams`, `queryParams`,
+`params` (combined named and query params), `matchedRouted`,and `uri`. The
+options hash is constructed from any options defined in setRoutes that matches
+the current route.
 
 ### `Aviator.navigate`
 
@@ -178,12 +206,16 @@ re-dispatch the current uri
 
 Aviator supports modern browsers: IE9+, Chrome, Safari, Firefox, Opera
 
+## Build aviator.js
+
+Aviator uses browserify to combine modules. Run `grunt build` to create aviator.js
+
 ## Tests
 
 Aviator uses Jasmine specs. They can be run from the cli:
 
 ```
-grunt jasmine:all
+grunt test
 ```
 
 Or in your browser via a simple http server:
