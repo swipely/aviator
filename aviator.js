@@ -768,7 +768,7 @@ Route.prototype = {
 
         if (this.isFragment(key) && this.isFragmentInURI(key)) {
           this.updateMatchedRoute(key);
-          this.updateURI(key);
+          this.removeFragmentFromURI(key);
 
           if (this.isActionDescriptor(value)) {
 
@@ -793,6 +793,7 @@ Route.prototype = {
                 }
               }
 
+              // Adding the action
               this.actions.push(action);
             }
           }
@@ -832,23 +833,33 @@ Route.prototype = {
   /**
   removes matched fragments from the beginning of the uri
 
-  @method updateURI
+  @method removeFragmentFromURI
   @param {String} fragment
   **/
-  updateURI: function (fragment) {
+  removeFragmentFromURI: function (fragment) {
     var uri = this.uri,
-        split,
-        match;
+        uriParts, subFrags;
 
     if (fragment !== '/' && fragment !== '/*') {
-      split = uri.split('/');
-      match = split[1];
+      if (this.includesNamedParam(fragment)) {
+        uriParts = uri.split('/'),
+        subFrags = fragment.split('/');
 
-      if (match) {
-        this.uri = uri.replace(match[1], '');
-        this.uri = uri.replace('/' + match, '');
+        subFrags.forEach(function (f, i) {
+          if (f.indexOf(':') === 0) {
+            uri = uri.replace('/' + uriParts[i], '');
+          }
+          else if (f) {
+            uri = uri.replace('/' + f, '');
+          }
+        });
+      }
+      else {
+        uri = uri.replace(fragment, '');
       }
     }
+
+    this.uri = uri;
   },
 
   /**
@@ -857,22 +868,49 @@ Route.prototype = {
   @return {Boolean}
   **/
   isFragmentInURI: function (fragment) {
-    var uri    = this.uri,
-        match;
+    var uri = this.uri,
+        uriParts, subFrags;
+
+    if (uri === '/' || uri === '') {
+      return fragment === '/' || fragment === '/*';
+    }
 
     if ( fragment === '/' ) {
-      return (uri === '/' || uri === '');
+      return false;
     }
     else if ( fragment === '/*' ) {
       return true;
     }
-    else if ( this.isNamedParam(fragment) ) {
-      return (uri !== '/' && uri !== '');
+    // includes vs is named param
+    else if (this.includesNamedParam(fragment)) {
+      uriParts = uri.split('/'),
+      subFrags = fragment.split('/');
+
+      if (subFrags.length === 2) {
+        return true;
+      }
+
+      return subFrags.map(function (f, i) {
+        if (f.indexOf(':') === 0) {
+          return true;
+        }
+        else {
+          return uriParts[i].indexOf(f) !== -1;
+        }
+      }).reduce(function (a, b) { return a && b; });
     }
     else {
-      match = uri.match(/(\/\w+)\/?/);
-      return match && fragment === match[1];
+      return uri.indexOf(fragment) === 0;
     }
+  },
+
+  /**
+  @method includesNamedParam
+  @param {String} fragment
+  @return {Boolean}
+  **/
+  includesNamedParam: function (fragment) {
+    return fragment.indexOf('/:') !== -1;
   },
 
   /**
