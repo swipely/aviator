@@ -384,6 +384,18 @@ describe('Navigator', function () {
         });
       });
     });
+
+    describe('when _dispatchingStarted is false', function () {
+      beforeEach(function () {
+        spyOn( subject, 'createRouteForURI' ).andReturn({ matchedRoute: '', actions: [], exits: [], options: {}});
+        subject._dispatchingStarted = false;
+      });
+
+      it('sets it to true', function () {
+        subject.dispatch();
+        expect( subject._dispatchingStarted ).toBe( true );
+      });
+    });
   });
 
   describe('#_invokeActions', function () {
@@ -431,6 +443,34 @@ describe('Navigator', function () {
 
         expect( target.actionThree ).not.toHaveBeenCalled();
         expect( target.actionFour ).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('onPopState', function () {
+    beforeEach(function () {
+      spyOn( subject, 'onURIChange' );
+    });
+
+    describe('when `_dispatchingStarted` is false', function () {
+      beforeEach(function () {
+        subject._dispatchingStarted = false;
+      });
+
+      it('does not calls onURIChange', function () {
+        subject.onPopState();
+        expect( subject.onURIChange ).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when `_dispatchingStarted` is true', function () {
+      beforeEach(function () {
+        subject._dispatchingStarted = true;
+      });
+
+      it('calls onURIChange', function () {
+        subject.onPopState();
+        expect( subject.onURIChange ).toHaveBeenCalled();
       });
     });
   });

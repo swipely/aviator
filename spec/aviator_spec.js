@@ -51,7 +51,6 @@ describe('Aviator', function () {
     it('calls dispatch on the private navigator object', function () {
       expect( _navigator.dispatch ).toHaveBeenCalled();
     });
-
   });
 
   describe('.getCurrentRequest', function () {

@@ -252,6 +252,7 @@ var Navigator = function () {
   this._routes  = null;
   this._exits   = [];
   this._silent  = false;
+  this._dispatchingStarted = false;
 };
 
 Navigator.prototype = {
@@ -352,6 +353,10 @@ Navigator.prototype = {
 
     // collect exits of the current matching route
     this._exits = route.exits;
+
+    if (!this._dispatchingStarted) {
+      this._dispatchingStarted = true;
+    }
   },
 
   /**
@@ -366,15 +371,17 @@ Navigator.prototype = {
   },
 
   /**
-  Some browsers fire 'popstate' on the initial page load
-  with a null state object. In those cases we don't want
-  to trigger the uri change.
-
   @method onPopState
   @param {Event}
   **/
   onPopState: function (ev) {
-    if (ev.state) this.onURIChange();
+    // Some browsers fire 'popstate' on the initial page load with a null state
+    // object. We always want manual control over the initial page dispatch, so
+    // prevent any popStates from changing the url until we have started
+    // dispatching.
+    if (this._dispatchingStarted) {
+      this.onURIChange();
+    }
   },
 
   /**
