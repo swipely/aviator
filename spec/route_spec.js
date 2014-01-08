@@ -272,6 +272,78 @@ describe('Route', function () {
       });
     });
 
+    describe('with multiple slashes on a route level', function () {
+      beforeEach(function () {
+        uri = '/users/type/admins/all';
+        navigator._routes = {
+          '/users': {
+            target: usersTarget,
+            '/type/admins/all': 'show'
+          }
+        };
+        subject = navigator.createRouteForURI(uri);
+      });
+
+      it('finds the correct action', function () {
+        expect( subject.matchedRoute ).toBe( '/users/type/admins/all' )
+        expect( subject.actions ).toEqual(
+          [{ method: 'show', target: usersTarget }]
+        );
+      });
+
+      describe('and with named params', function () {
+        beforeEach(function () {
+          uri = '/users/type/ops/all';
+          navigator._routes = {
+            '/users': {
+              target: usersTarget,
+              '/type/:kind/all': 'show'
+            }
+          };
+          subject = navigator.createRouteForURI(uri);
+        });
+
+        it('finds the correct action', function () {
+          expect( subject.matchedRoute ).toBe( '/users/type/:kind/all' )
+          expect( subject.actions ).toEqual(
+            [{ method: 'show', target: usersTarget }]
+          );
+        });
+      });
+
+      describe('and with a sub tree', function () {
+        beforeEach(function () {
+          uri = '/users/type/ops/all/12';
+          navigator._routes = {
+            '/users/type/:kind/all': {
+              '/:id': {
+                target: usersTarget,
+                '/': 'show'
+              }
+            }
+          };
+          subject = navigator.createRouteForURI(uri);
+        });
+
+        it('finds the correct action', function () {
+          expect( subject.matchedRoute ).toBe( '/users/type/:kind/all/:id' )
+          expect( subject.actions ).toEqual(
+            [{ method: 'show', target: usersTarget }]
+          );
+        });
+      });
+    });
+
+  });
+
+  describe('#includesNamedParam', function () {
+    it('is true is there are :foo in the given fragment', function () {
+      expect( subject.includesNamedParam('/foo/:bar/baz') ).toBe( true );
+      expect( subject.includesNamedParam('/:foo/:bar/baz') ).toBe( true );
+      expect( subject.includesNamedParam('/:foo/bar/baz') ).toBe( true );
+      expect( subject.includesNamedParam('/foo/bar/:baz') ).toBe( true );
+      expect( subject.includesNamedParam('/foo/bar/baz') ).toBe( false );
+    });
   });
 
 });
