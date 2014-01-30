@@ -190,8 +190,9 @@ Navigator.prototype = {
   @param {Object} [options]
   **/
   navigate: function (uri, options) {
-    var options = options || {},
-        namedParams = options.namedParams,
+    options = options || {};
+
+    var namedParams = options.namedParams,
         queryParams = options.queryParams;
 
     // halt any previous action invocations
