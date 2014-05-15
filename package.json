@@ -10,7 +10,7 @@
     "grunt-browserify": "~1.2.0"
   },
   "scripts": {
-    "test": "./node_modules/grunt-cli/bin/grunt jasmine --verbose"
+    "test": "./node_modules/grunt-cli/bin/grunt test"
   },
   "engine": {
     "node": ">=0.8.x"

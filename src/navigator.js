@@ -97,7 +97,23 @@ Navigator.prototype = {
   @return {String|Null}
   **/
   getQueryString: function () {
-    return location.search || null;
+    var uri, queryString;
+
+    if (this.pushStateEnabled) {
+      return location.search || null;
+    }
+    else {
+      uri = this.getCurrentURI();
+
+      if (uri.indexOf('?') !== -1) {
+        queryString = uri.split('?')[1];
+
+        return (queryString ? '?' + queryString : null);
+      }
+      else {
+        return null;
+      }
+    }
   },
 
   /**
