@@ -333,7 +333,23 @@ Navigator.prototype = {
   @return {String|Null}
   **/
   getQueryString: function () {
-    return location.search || null;
+    var uri, queryString;
+
+    if (this.pushStateEnabled) {
+      return location.search || null;
+    }
+    else {
+      uri = this.getCurrentURI();
+
+      if (uri.indexOf('?') !== -1) {
+        queryString = uri.split('?')[1];
+
+        return queryString ? '?' + queryString : null;
+      }
+      else {
+        return null
+      }
+    }
   },
 
   /**
@@ -426,8 +442,9 @@ Navigator.prototype = {
   @param {Object} [options]
   **/
   navigate: function (uri, options) {
-    var options = options || {},
-        namedParams = options.namedParams,
+    options = options || {};
+
+    var namedParams = options.namedParams,
         queryParams = options.queryParams;
 
     // halt any previous action invocations

@@ -19,6 +19,44 @@ describe('Navigator', function () {
     window.history.replaceState({}, '', '/_SpecRunner.html');
   });
 
+  describe('#getQueryString', function () {
+    describe('with push state disabled', function () {
+      beforeEach(function () {
+        subject.pushStateEnabled = false;
+      });
+
+      describe('and a query string in the current uri', function () {
+        beforeEach(function () {
+          spyOn( subject, 'getCurrentURI' ).andReturn( 'foo/bar?baz=123' );
+        });
+
+        it('gets the queryString from the hash url', function () {
+          expect( subject.getQueryString() ).toBe( '?baz=123' );
+        });
+      });
+
+      describe('and a no query string in the current uri', function () {
+        beforeEach(function () {
+          spyOn( subject, 'getCurrentURI' ).andReturn( 'foo/bar' );
+        });
+
+        it('gets the queryString from the hash url', function () {
+          expect( subject.getQueryString() ).toBe( null );
+        });
+      });
+
+      describe('and an empty query string in the current uri', function () {
+        beforeEach(function () {
+          spyOn( subject, 'getCurrentURI' ).andReturn( 'foo/bar?' );
+        });
+
+        it('gets the queryString from the hash url', function () {
+          expect( subject.getQueryString() ).toBe( null );
+        });
+      });
+    });
+  });
+
   describe('#getCurrentURI', function () {
     var root;
 
