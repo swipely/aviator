@@ -316,12 +316,25 @@ Navigator.prototype = {
   },
 
   /**
+  @method getCurrentPathname
+  @return {String}
+  **/
+  getCurrentPathname: function () {
+    if (this.pushStateEnabled) {
+      return this._removeURIRoot(location.pathname);
+    }
+    else {
+      return location.hash.replace('#', '').split('?')[0];
+    }
+  },
+
+  /**
   @method getCurrentURI
   @return {String}
   **/
   getCurrentURI: function () {
     if (this.pushStateEnabled) {
-      return this._removeURIRoot(location.pathname);
+      return this._removeURIRoot(location.pathname) + location.search;
     }
     else {
       return location.hash.replace('#', '');
@@ -339,15 +352,13 @@ Navigator.prototype = {
       return location.search || null;
     }
     else {
-      uri = this.getCurrentURI();
+      queryString = this.getCurrentURI().split('?')[1];
 
-      if (uri.indexOf('?') !== -1) {
-        queryString = uri.split('?')[1];
-
-        return queryString ? '?' + queryString : null;
+      if (queryString) {
+        return '?' + queryString;
       }
       else {
-        return null
+        return null;
       }
     }
   },
@@ -356,7 +367,7 @@ Navigator.prototype = {
   @method dispatch
   **/
   dispatch: function () {
-    var uri         = this.getCurrentURI(),
+    var uri         = this.getCurrentPathname(),
         route       = this.createRouteForURI(uri),
         queryString = this.getQueryString(),
         request     = this.createRequest(uri, queryString, route.matchedRoute);
