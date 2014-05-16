@@ -1,6 +1,6 @@
 describe('Route', function () {
 
-  var routes, uri, subject, usersTarget;
+  var routes, uri, subject, usersTarget, navigator;
 
   beforeEach(function () {
     usersTarget = {

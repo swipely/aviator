@@ -57,6 +57,48 @@ describe('Navigator', function () {
     });
   });
 
+  describe('#getCurrentPathname', function () {
+    var root;
+
+    beforeEach(function () {
+      root = '/_SpecRunner.html';
+
+      subject.root = root;
+    });
+
+    describe('with push state enabled', function () {
+      beforeEach(function () {
+        subject.pushStateEnabled = true;
+      });
+
+      describe('and the uri is /foo/bar', function () {
+        beforeEach(function () {
+          window.history.pushState({}, '', root + '/foo/bar?bar=123');
+        });
+
+        it('returns /foo/bar', function () {
+          expect( subject.getCurrentPathname() ).toBe( '/foo/bar' );
+        });
+      });
+    });
+
+    describe('with push state disabled', function () {
+      beforeEach(function () {
+        subject.pushStateEnabled = false;
+      });
+
+      describe('and the uri is #/foo/bar', function () {
+        beforeEach(function () {
+          window.location.hash = '/foo/bar?bar=123';
+        });
+
+        it('returns /foo/bar', function () {
+          expect( subject.getCurrentPathname() ).toBe( '/foo/bar' );
+        });
+      });
+    });
+  });
+
   describe('#getCurrentURI', function () {
     var root;
 
@@ -73,11 +115,11 @@ describe('Navigator', function () {
 
       describe('and the uri is /foo/bar', function () {
         beforeEach(function () {
-          window.history.pushState({}, '', root + '/foo/bar');
+          window.history.pushState({}, '', root + '/foo/bar?bar=123');
         });
 
         it('returns /foo/bar', function () {
-          expect( subject.getCurrentURI() ).toBe( '/foo/bar' );
+          expect( subject.getCurrentURI() ).toBe( '/foo/bar?bar=123' );
         });
       });
     });
@@ -89,11 +131,11 @@ describe('Navigator', function () {
 
       describe('and the uri is #/foo/bar', function () {
         beforeEach(function () {
-          window.location.hash = '/foo/bar';
+          window.location.hash = '/foo/bar?bar=123';
         });
 
         it('returns /foo/bar', function () {
-          expect( subject.getCurrentURI() ).toBe( '/foo/bar' );
+          expect( subject.getCurrentURI() ).toBe( '/foo/bar?bar=123' );
         });
       });
     });
@@ -308,11 +350,21 @@ describe('Navigator', function () {
     describe('with push state disabled', function () {
       beforeEach(function () {
         subject.pushStateEnabled = false;
-        subject.navigate('/foo/bar');
       });
 
       it('changes the hash to the href', function () {
+        subject.navigate('/foo/bar');
         expect( window.location.hash ).toBe( '#/foo/bar' );
+      });
+
+      describe('and navigating with a queryString', function () {
+        beforeEach(function () {
+          subject.navigate('/foo/bar?baz=123');
+        });
+
+        it('changes the hash to the href with a queryString', function () {
+          expect( window.location.hash ).toBe( '#/foo/bar?baz=123' );
+        });
       });
     });
 
