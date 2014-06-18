@@ -399,6 +399,22 @@ describe('Navigator', function () {
       });
     });
 
+    describe('when not called with namedParams', function () {
+      beforeEach(function () {
+        spyOn( subject, 'onURIChange' );
+        spyOn( subject, 'getCurrentRequest' ).andReturn({ namedParams: { named: 'bar' } });
+        spyOn( window.history, 'pushState' ).andCallFake(function (a, b, c) {
+          expect( a ).toEqual( 'navigate' );
+          expect( b ).toBe( '' );
+          expect( c ).toBe( '/_SpecRunner.html/foo/bar/baz' );
+        });
+      });
+
+      it('uses the namedParams of the currentRequest', function () {
+        subject.navigate('/foo/:named/baz');
+      });
+    });
+
     describe('when called with queryParams', function () {
       beforeEach(function () {
         spyOn( subject, 'onURIChange' );
