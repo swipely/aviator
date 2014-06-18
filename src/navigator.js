@@ -219,8 +219,13 @@ Navigator.prototype = {
   navigate: function (uri, options) {
     options = options || {};
 
-    var namedParams = options.namedParams,
-        queryParams = options.queryParams;
+    var request     = this.getCurrentRequest();
+    var namedParams = options.namedParams;
+    var queryParams = options.queryParams;
+
+    if (!namedParams && request) {
+      namedParams = request.namedParams;
+    }
 
     // halt any previous action invocations
     this._actions = [];
