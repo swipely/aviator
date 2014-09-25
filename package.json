@@ -1,6 +1,19 @@
 {
   "name": "aviator",
+  "description": "Aviator is a single-page front-end router built for modularity.",
+  "keywords": [
+    "router",
+    "single page application",
+    "spa",
+    "pushState"
+  ],
   "version": "0.4.2",
+  "homepage": "https://github.com/swipely/aviator/issues",
+  "bugs": "https://github.com/swipely/aviator/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swipely/aviator/issues",
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-watch": "0.2.0",
