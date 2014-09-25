@@ -110,7 +110,7 @@ Only expose a tiny API to keep internal routing safe
 
 @singleton Aviator
 **/
-window.Aviator = {
+var Aviator = {
 
   /**
   @property pushStateEnabled
@@ -232,6 +232,12 @@ window.Aviator = {
   }
 
 };
+
+if (window) {
+  window.Aviator = Aviator;
+}
+
+module.exports = Aviator;
 
 },{"./navigator":3}],3:[function(require,module,exports){
 var helpers = require('./helpers'),

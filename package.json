@@ -9,8 +9,10 @@
     "grunt-contrib-watch": "~0.2.0",
     "grunt-browserify": "~1.2.0"
   },
+  "main": "src/main.js",
   "scripts": {
-    "test": "./node_modules/grunt-cli/bin/grunt test"
+    "test": "./node_modules/grunt-cli/bin/grunt test",
+    "build": "./node_modules/grunt-cli/bin/grunt build"
   },
   "engine": {
     "node": ">=0.8.x"
