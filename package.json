@@ -12,7 +12,7 @@
   "bugs": "https://github.com/swipely/aviator/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/swipely/aviator/issues",
+    "url": "https://github.com/swipely/aviator/issues"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
