@@ -140,7 +140,10 @@ Navigator.prototype = {
 
     // temporary action array that can be halted
     this._actions = route.actions;
-    this._invokeActions(request, route.options);
+
+    if (!this._silent) {
+      this._invokeActions(request, route.options);
+    }
 
     // collect exits of the current matching route
     this._exits = route.exits;
@@ -154,10 +157,7 @@ Navigator.prototype = {
   @method onURIChange
   **/
   onURIChange: function () {
-    if (!this._silent) {
-      this.dispatch();
-    }
-
+    this.dispatch();
     this._silent = false;
   },
 

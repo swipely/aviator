@@ -370,13 +370,33 @@ describe('Navigator', function () {
 
     describe('when called with silent: true', function () {
       beforeEach(function () {
+        spyOn( usersTarget, 'index' );
+
         subject.pushStateEnabled = true;
-        spyOn( subject, 'dispatch' );
+        subject._routes = routes;
+        subject._request = null;
       });
 
-      it('never calls dispatch', function () {
-        subject.navigate('/foo/bar', { silent: true });
-        expect( subject.dispatch ).not.toHaveBeenCalled();
+      it('stores the request as if it was a regular one', function () {
+        subject.navigate('/users', {
+          silent: true,
+          queryParams: { foo: 'bar' }
+        });
+
+        // TODO: better object comparision than JSON
+        expect( JSON.stringify(subject.getCurrentRequest()) ).toEqual(JSON.stringify({
+          namedParams: {},
+          queryParams: { foo: 'bar' },
+          params: { foo: 'bar' },
+          uri: '/users',
+          queryString: '?foo=bar',
+          matchedRoute: '/users'
+        }));
+      });
+
+      it('doesnt call the actions of the route target', function () {
+        subject.navigate('/users', { silent: true });
+        expect( usersTarget.index ).not.toHaveBeenCalled();
       });
     });
 
