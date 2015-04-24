@@ -219,6 +219,7 @@ Navigator.prototype = {
   navigate: function (uri, options) {
     var link;
 
+    options = options || {};
     // halt any previous action invocations
     this._actions = [];
 
