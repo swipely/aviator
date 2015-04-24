@@ -101,6 +101,20 @@ describe('Aviator', function () {
     });
   });
 
+  describe('.linkTo', function () {
+    var url = '/lol/who/cares',
+        opts = {};
+
+    beforeEach(function () {
+      spyOn( _navigator, 'linkTo' );
+      subject.linkTo( url, opts );
+    });
+
+    it('calls linkTo on the navigator', function () {
+      expect( _navigator.linkTo ).toHaveBeenCalledWith( url, opts );
+    });
+  });
+
   describe('.serializeQueryParams', function () {
     beforeEach(function () {
       spyOn( _navigator, 'serializeQueryParams' );

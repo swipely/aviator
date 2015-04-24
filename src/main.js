@@ -74,6 +74,15 @@ var Aviator = {
     this._navigator.navigate(uri, options);
   },
 
+  /**
+   @method linkTo
+   @param {String} uri to navigate to
+   @param {Object} [options]
+   **/
+  linkTo: function (uri, options) {
+    return this._navigator.linkTo(uri, options);
+  },
+
 
   /**
   @method serializeQueryParams
