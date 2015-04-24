@@ -26,6 +26,7 @@ Aviator exposes a small API:
 * `refresh`: re-dispatches the current URI
 * `getCurrentURI`: get the currently matched URI
 * `getCurrentRequest`: get the currently matched Request
+* `linkTo`: generate a route for the given path
 
 ### Configuration properties
 
@@ -197,6 +198,23 @@ Pass in the `namedParams` option to interpolate params into the url before navig
 
 If you wish to change the url, but not have it call the route target, pass in `{ silent: true }` like so
 `Aviator.navigate('/users', { silent: true });`
+
+### `Aviator.linkTo`
+
+This function accepts a URI and an optional object with the same queryParams and namedParams as `Aviator.navigate`.
+It returns a String that can be used to link to that path.
+
+For example, calling `Aviator.linkTo('/users/:id/edit', { namedParams: { id: 3 }, queryParams: { force: true } })`
+will generate the String `'/users/3/edit?force=true'`.
+
+This can be used in conjection with the `a.navigate` link selector to declarativly create links.
+The below JSX snippet creates an `<a>` element that links to `/home/?loggedIn=false`.
+
+```jsx
+  <a className='navigate', href={Aviator.linkTo('/home/', { queryParams: { loggedIn: false } })}>
+    Home
+  </a>.
+```
 
 ### `Aviator.refresh`
 
