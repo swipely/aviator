@@ -213,7 +213,7 @@ The below JSX snippet creates an `<a>` element that links to `/home/?loggedIn=fa
 ```jsx
   <a className='navigate', href={Aviator.linkTo('/home/', { queryParams: { loggedIn: false } })}>
     Home
-  </a>.
+  </a>
 ```
 
 ### `Aviator.refresh`
