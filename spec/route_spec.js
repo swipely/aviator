@@ -13,13 +13,72 @@ describe('Route', function () {
   });
 
   describe('given a uri that doesnt match any routes', function () {
+    var notFoundTarget;
+
     beforeEach(function () {
-      uri = '/fartblaherty';
-      subject = navigator.createRouteForURI(uri);
+      notFoundTarget = {
+        test: function() {},
+        notFound1: function () {},
+        notFound2: function () {},
+        notFound3: function () {}
+      };
+      uri = '/fart/blaherty';
+      navigator._routes = {
+        '/': {
+          target: notFoundTarget,
+          '/fart': {
+            '/blaherty': {
+              '/test': 'test',
+              $notFound: 'notFound1'
+            },
+            $notFound: 'notFound2'
+          },
+          '/hom': {
+            '/tulihan': {
+            },
+            $notFound: 'notFound3'
+          }
+        }
+      };
     });
 
-    it('doesnt return anything', function () {
-      expect( subject.matchedRoute ).toBe( '' );
+    describe('when there is no $notFound matcher in the current scope', function () {
+      describe('and there is no $notFound matcher in a parent scope', function () {
+        beforeEach(function () {
+          uri = '/bad/route';
+          subject = navigator.createRouteForURI(uri);
+        });
+
+        it('doesnt return anything', function () {
+          expect( subject.matchedRoute ).toBe( '' );
+        });
+      });
+
+      describe('and there is a $notFound matcher in a parent scope', function () {
+        beforeEach(function () {
+          uri = '/hom/tulihan';
+          subject = navigator.createRouteForURI(uri);
+        });
+
+        xit('returns the nearest $notFound matcher', function () {
+          expect( subject.actions ).toEqual(
+            [{ method: 'notFound3', target: notFoundTarget }]
+          );
+        });
+      });
+    });
+
+    describe('when there is a $notFound matcher in the current scope', function () {
+      beforeEach(function () {
+        uri = '/fart/blaherty/lol';
+        subject = navigator.createRouteForURI(uri);
+      });
+
+      xit('returns the $notFound matcher in that scope only', function () {
+        expect( subject.actions ).toEqual(
+          [{ method: 'notFound1', target: notFoundTarget }]
+        );
+      });
     });
   });
 
@@ -41,7 +100,7 @@ describe('Route', function () {
       });
 
       it('returns the correct route properties', function () {
-        expect( subject.matchedRoute ).toBe( '/users/:uuid' )
+        expect( subject.matchedRoute ).toBe( '/users/:uuid' );
         expect( subject.actions ).toEqual(
           [{ method: 'show', target: usersTarget }]
         );

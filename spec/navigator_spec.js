@@ -182,7 +182,7 @@ describe('Navigator', function () {
 
       it('saves root', function () {
         expect( subject.root ).toBe( '/slash/badass' );
-      })
+      });
     });
 
     it('sets up listeners for all clicks', function () {
@@ -343,7 +343,6 @@ describe('Navigator', function () {
             );
           });
         });
-
       });
     });
 
@@ -364,6 +363,25 @@ describe('Navigator', function () {
 
         it('changes the hash to the href with a queryString', function () {
           expect( window.location.hash ).toBe( '#/foo/bar?baz=123' );
+        });
+      });
+    });
+
+    describe('when no route can be found', function () {
+      describe('and there is a $notFound key in the current context', function () {
+        xit('calls its $notFound function and none of the parent $notFound functions', function () {
+        });
+      });
+
+      describe('but there is no $notFound key in the current context', function () {
+        describe('and one of the parent elements has a $notFound key', function () {
+          xit('calls the parent $notFound function', function () {
+          });
+        });
+
+        describe('and none of the parent elements has a $notFound key', function () {
+          xit('only calls the relevant "/*" matchers', function () {
+          });
         });
       });
     });
