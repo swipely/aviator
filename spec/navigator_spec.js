@@ -1,15 +1,29 @@
 describe('Navigator', function () {
 
-  var subject, usersTarget, routes;
+  var subject, itemsTarget, usersTarget, routes;
 
   beforeEach(function () {
     subject = Aviator._navigator;
-    usersTarget = { index: function () {}, show: function () {}, exitIndex: function () {} };
+
+    itemsTarget = {
+      list: function() {},
+      notFound: function () {}
+    };
+    usersTarget = {
+      index: function () {},
+      show: function () {},
+      exitIndex: function () {},
+    };
 
     routes = {
       '/users': {
         target: usersTarget,
-        '/': 'index'
+        '/': 'index',
+      },
+      '/items': {
+        target: itemsTarget,
+        '/list': 'list',
+        $notFound: 'notFound'
       }
     };
   });
@@ -368,20 +382,24 @@ describe('Navigator', function () {
     });
 
     describe('when no route can be found', function () {
-      describe('and there is a $notFound key in the current context', function () {
-        xit('calls its $notFound function and none of the parent $notFound functions', function () {
+      beforeEach(function () {
+        spyOn( itemsTarget.notFound, 'call' );
+        subject.pushStateEnabled = true;
+        subject._routes = routes;
+        subject._request = null;
+      });
+
+      describe('and there is a $notFound matcher', function () {
+        it('calls the $notFound matcher', function () {
+          subject.navigate('/items/404');
+          expect( itemsTarget.notFound.call ).toHaveBeenCalled();
         });
       });
 
-      describe('but there is no $notFound key in the current context', function () {
-        describe('and one of the parent elements has a $notFound key', function () {
-          xit('calls the parent $notFound function', function () {
-          });
-        });
-
-        describe('and none of the parent elements has a $notFound key', function () {
-          xit('only calls the relevant "/*" matchers', function () {
-          });
+      describe('and is no $notFound matcher', function () {
+        it('calls no $notFound matcher', function () {
+          subject.navigate('/users/404');
+          expect( itemsTarget.notFound.call ).not.toHaveBeenCalled();
         });
       });
     });
