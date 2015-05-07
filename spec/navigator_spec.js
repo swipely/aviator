@@ -6,7 +6,12 @@ describe('Navigator', function () {
     subject = Aviator._navigator;
 
     itemsTarget = {
-      list: function() {},
+      redirect: function (request) {
+        if (request.queryParams.redirect) {
+          subject.navigate(request.queryParams.redirect);
+        }
+      },
+      list: function () {},
       notFound: function () {}
     };
     usersTarget = {
@@ -22,6 +27,7 @@ describe('Navigator', function () {
       },
       '/items': {
         target: itemsTarget,
+        '/*': 'redirect',
         '/list': 'list',
         $notFound: 'notFound'
       }
@@ -387,6 +393,21 @@ describe('Navigator', function () {
         subject.pushStateEnabled = true;
         subject._routes = routes;
         subject._request = null;
+      });
+
+      describe('but there is a redirect in one of the /* matchers', function () {
+        beforeEach(function () {
+          spyOn( itemsTarget.list, 'call' );
+        });
+
+        it('redirects and does not call the notFound matcher', function () {
+          subject.navigate('/items/404', {
+            queryParams: { redirect: '/items/list' }
+          });
+
+          expect( itemsTarget.list.call ).toHaveBeenCalled();
+          expect( itemsTarget.notFound.call ).not.toHaveBeenCalled();
+        });
       });
 
       describe('and there is a $notFound matcher', function () {
