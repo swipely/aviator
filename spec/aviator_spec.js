@@ -101,17 +101,17 @@ describe('Aviator', function () {
     });
   });
 
-  describe('.linkTo', function () {
+  describe('.hrefFor', function () {
     var url = '/lol/who/cares',
         opts = {};
 
     beforeEach(function () {
-      spyOn( _navigator, 'linkTo' );
-      subject.linkTo( url, opts );
+      spyOn( _navigator, 'hrefFor' );
+      subject.hrefFor( url, opts );
     });
 
-    it('calls linkTo on the navigator', function () {
-      expect( _navigator.linkTo ).toHaveBeenCalledWith( url, opts );
+    it('calls hrefFor on the navigator', function () {
+      expect( _navigator.hrefFor ).toHaveBeenCalledWith( url, opts );
     });
   });
 

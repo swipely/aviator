@@ -75,12 +75,12 @@ var Aviator = {
   },
 
   /**
-   @method linkTo
+   @method hrefFor
    @param {String} uri to navigate to
    @param {Object} [options]
    **/
-  linkTo: function (uri, options) {
-    return this._navigator.linkTo(uri, options);
+  hrefFor: function (uri, options) {
+    return this._navigator.hrefFor(uri, options);
   },
 
 

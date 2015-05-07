@@ -178,12 +178,12 @@ var Aviator = {
   },
 
   /**
-   @method linkTo
+   @method hrefFor
    @param {String} uri to navigate to
    @param {Object} [options]
    **/
-  linkTo: function (uri, options) {
-    return this._navigator.linkTo(uri, options);
+  hrefFor: function (uri, options) {
+    return this._navigator.hrefFor(uri, options);
   },
 
 
@@ -474,7 +474,7 @@ Navigator.prototype = {
     // halt any previous action invocations
     this._actions = [];
 
-    link = this.linkTo(uri, options);
+    link = this.hrefFor(uri, options);
 
     if (options.silent) {
       this._silent = true;
@@ -501,11 +501,11 @@ Navigator.prototype = {
   },
 
   /**
-  @method linkTo
+  @method hrefFor
   @param {String} uri
   @param {Object} [options]
    **/
-  linkTo: function (uri, options) {
+  hrefFor: function (uri, options) {
     options = options || {};
 
     var link        = uri + '';

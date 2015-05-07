@@ -259,7 +259,7 @@ describe('Navigator', function () {
     });
   });
 
-  describe('#linkTo', function () {
+  describe('#hrefFor', function () {
     var uri, options, expected;
 
     describe('when neither named nor query params are given', function () {
@@ -272,7 +272,7 @@ describe('Navigator', function () {
       });
 
       it('returns the original URI', function () {
-        expect( subject.linkTo(uri, options) ).toEqual( expected );
+        expect( subject.hrefFor(uri, options) ).toEqual( expected );
       });
     });
 
@@ -286,7 +286,7 @@ describe('Navigator', function () {
       });
 
       it('compiles them into the link', function () {
-        expect( subject.linkTo(uri, options) ).toEqual( expected );
+        expect( subject.hrefFor(uri, options) ).toEqual( expected );
       });
     });
 
@@ -300,7 +300,7 @@ describe('Navigator', function () {
       });
 
       it('compiles them into the link', function () {
-        expect( subject.linkTo(uri, options) ).toEqual( expected );
+        expect( subject.hrefFor(uri, options) ).toEqual( expected );
       });
     });
   });
