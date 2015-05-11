@@ -217,8 +217,47 @@ Navigator.prototype = {
   @param {Object} [options]
   **/
   navigate: function (uri, options) {
+    var link;
+
+    options = options || {};
+    // halt any previous action invocations
+    this._actions = [];
+
+    link = this.hrefFor(uri, options);
+
+    if (options.silent) {
+      this._silent = true;
+    }
+
+    if (this.pushStateEnabled) {
+      link = this._removeURIRoot(link);
+
+      link = this.root + link;
+
+      if (options.replace) {
+        history.replaceState('navigate', '', link);
+      }
+      else {
+        history.pushState('navigate', '', link);
+      }
+
+      this.onURIChange();
+    }
+    else {
+      if (options.replace) location.replace('#' + link);
+      else location.hash = link;
+    }
+  },
+
+  /**
+  @method hrefFor
+  @param {String} uri
+  @param {Object} [options]
+   **/
+  hrefFor: function (uri, options) {
     options = options || {};
 
+    var link        = uri + '';
     var request     = this.getCurrentRequest();
     var namedParams = options.namedParams;
     var queryParams = options.queryParams;
@@ -227,43 +266,19 @@ Navigator.prototype = {
       namedParams = request.namedParams;
     }
 
-    // halt any previous action invocations
-    this._actions = [];
-
     if (queryParams) {
-      uri += this.serializeQueryParams(queryParams);
+      link += this.serializeQueryParams(queryParams);
     }
 
     if (namedParams) {
       for (var p in namedParams) {
         if (namedParams.hasOwnProperty(p)) {
-          uri = uri.replace(':' + p, encodeURIComponent(namedParams[p]));
+          link = link.replace(':' + p, encodeURIComponent(namedParams[p]));
         }
       }
     }
 
-    if (options.silent) {
-      this._silent = true;
-    }
-
-    if (this.pushStateEnabled) {
-      uri = this._removeURIRoot(uri);
-
-      uri = this.root + uri;
-
-      if (options.replace) {
-        history.replaceState('navigate', '', uri);
-      }
-      else {
-        history.pushState('navigate', '', uri);
-      }
-
-      this.onURIChange();
-    }
-    else {
-      if (options.replace) location.replace('#' + uri);
-      else location.hash = uri;
-    }
+    return link;
   },
 
   /**

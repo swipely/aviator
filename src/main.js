@@ -74,6 +74,15 @@ var Aviator = {
     this._navigator.navigate(uri, options);
   },
 
+  /**
+   @method hrefFor
+   @param {String} uri to navigate to
+   @param {Object} [options]
+   **/
+  hrefFor: function (uri, options) {
+    return this._navigator.hrefFor(uri, options);
+  },
+
 
   /**
   @method serializeQueryParams

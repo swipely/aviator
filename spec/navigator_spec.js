@@ -279,6 +279,52 @@ describe('Navigator', function () {
     });
   });
 
+  describe('#hrefFor', function () {
+    var uri, options, expected;
+
+    describe('when neither named nor query params are given', function () {
+      beforeEach(function () {
+        uri = '/some/uri/';
+        options = {};
+        options.queryParams = null;
+        options.namedParams = null;
+        expected = uri;
+      });
+
+      it('returns the original URI', function () {
+        expect( subject.hrefFor(uri, options) ).toEqual( expected );
+      });
+    });
+
+    describe('when named params are given', function () {
+      beforeEach(function () {
+        uri = '/users/:username/';
+        options = {};
+        options.queryParams = null;
+        options.namedParams = { username: 'slimjim', age: 'timeless' };
+        expected = '/users/slimjim/';
+      });
+
+      it('compiles them into the link', function () {
+        expect( subject.hrefFor(uri, options) ).toEqual( expected );
+      });
+    });
+
+    describe('when query params are given', function () {
+      beforeEach(function () {
+        uri = '/users/slimjim/';
+        options = {};
+        options.queryParams = { yolo: 'swag' };
+        options.namedParams = null;
+        expected = '/users/slimjim/?yolo=swag';
+      });
+
+      it('compiles them into the link', function () {
+        expect( subject.hrefFor(uri, options) ).toEqual( expected );
+      });
+    });
+  });
+
   describe('#navigate', function () {
     beforeEach(function () {
       subject.root = '/_SpecRunner.html';
