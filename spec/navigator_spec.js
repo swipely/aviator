@@ -29,7 +29,7 @@ describe('Navigator', function () {
         target: itemsTarget,
         '/*': 'redirect',
         '/list': 'list',
-        $notFound: 'notFound'
+        notFound: 'notFound'
       }
     };
   });
@@ -410,15 +410,15 @@ describe('Navigator', function () {
         });
       });
 
-      describe('and there is a $notFound matcher', function () {
-        it('calls the $notFound matcher', function () {
+      describe('and there is a notFound matcher', function () {
+        it('calls the notFound matcher', function () {
           subject.navigate('/items/404');
           expect( itemsTarget.notFound.call ).toHaveBeenCalled();
         });
       });
 
-      describe('and is no $notFound matcher', function () {
-        it('calls no $notFound matcher', function () {
+      describe('and is no notFound matcher', function () {
+        it('calls no notFound matcher', function () {
           subject.navigate('/users/404');
           expect( itemsTarget.notFound.call ).not.toHaveBeenCalled();
         });

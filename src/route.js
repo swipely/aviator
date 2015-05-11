@@ -59,10 +59,10 @@ Route.prototype = {
       target = this.targets[this.targets.length - 1];
     }
 
-    if (routeLevel.$notFound && target[routeLevel.$notFound]) {
+    if (routeLevel.notFound && target[routeLevel.notFound]) {
       this.notFound = {
         target: target,
-        method: routeLevel.$notFound
+        method: routeLevel.notFound
       };
     }
 

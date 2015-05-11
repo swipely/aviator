@@ -29,21 +29,21 @@ describe('Route', function () {
           '/*': 'before',
           '/blaherty': {
             '/test': 'test',
-            $notFound: 'notFound1'
+            notFound: 'notFound1'
           },
-          $notFound: 'notFound2'
+          notFound: 'notFound2'
         },
         '/hom': {
           '/tulihan': {
             '/': 'test'
           },
-          $notFound: 'notFound3'
+          notFound: 'notFound3'
         }
       };
     });
 
-    describe('when there is no $notFound matcher in the current scope', function () {
-      describe('and there is no $notFound matcher in a parent scope', function () {
+    describe('when there is no notFound matcher in the current scope', function () {
+      describe('and there is no notFound matcher in a parent scope', function () {
         beforeEach(function () {
           uri = '/bad/route';
           subject = navigator.createRouteForURI(uri);
@@ -54,13 +54,13 @@ describe('Route', function () {
         });
       });
 
-      describe('and there is a $notFound matcher in a parent scope', function () {
+      describe('and there is a notFound matcher in a parent scope', function () {
         beforeEach(function () {
           uri = '/hom/hulihan';
           subject = navigator.createRouteForURI(uri);
         });
 
-        it('returns the nearest $notFound matcher', function () {
+        it('returns the nearest notFound matcher', function () {
           expect( subject.actions ).toEqual(
             [{ method: 'notFound3', target: notFoundTarget }]
           );
@@ -68,13 +68,13 @@ describe('Route', function () {
       });
     });
 
-    describe('when there is a $notFound matcher in the current scope', function () {
+    describe('when there is a notFound matcher in the current scope', function () {
       beforeEach(function () {
         uri = '/fart/blaherty/taste';
         subject = navigator.createRouteForURI(uri);
       });
 
-      it('returns the $notFound matcher in that scope only', function () {
+      it('returns the notFound matcher in that scope only', function () {
         expect( subject.actions ).toEqual([
           { target: notFoundTarget, method: 'before' },
           { target: notFoundTarget, method: 'notFound1' }

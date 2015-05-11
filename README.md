@@ -132,9 +132,9 @@ will be called in that order, and both will be passed the options object.
 #### Not Found Handlers
 
 Aviator allows you to specify a method to be called when no route matches via
-the `$notFound` key. Much like normal routes, these can be added on a
+the `notFound` key. Much like normal routes, these can be added on a
 scope-by-scope basis. When a route cannot be found, only the `/*` matcher, and
-the `$notFound` of the nearest scope will be called. Here is an example
+the `notFound` of the nearest scope will be called. Here is an example
 configuration.
 
 ```javascript
@@ -146,17 +146,15 @@ Aviator.setRoutes({
       target: ReputationTarget,
       '/': { method: 'show', options: { renderMarketingLayout: false } }
     },
-    $notFound: 'notFound'
+    notFound: 'notFound'
   }
 });
 ```
 
 Hitting either `/marketing/bad-route/` or `/marketing/reputation/bad-route/`
 will call the `MarketingTarget.show` and `MarketingTarget.notFound` methods.
-However, hitting `/bad-route/` will call nothing unless a `$notFound` matcher
+However, hitting `/bad-route/` will call nothing unless a `notFound` matcher
 is found in the root context.
-
-Note that $notFound was chosen as a key because `$`s are invalid in URLs.
 
 #### namedParams
 
