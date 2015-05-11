@@ -1,15 +1,35 @@
 describe('Navigator', function () {
 
-  var subject, usersTarget, routes;
+  var subject, itemsTarget, usersTarget, routes;
 
   beforeEach(function () {
     subject = Aviator._navigator;
-    usersTarget = { index: function () {}, show: function () {}, exitIndex: function () {} };
+
+    itemsTarget = {
+      redirect: function (request) {
+        if (request.queryParams.redirect) {
+          subject.navigate(request.queryParams.redirect);
+        }
+      },
+      list: function () {},
+      notFound: function () {}
+    };
+    usersTarget = {
+      index: function () {},
+      show: function () {},
+      exitIndex: function () {},
+    };
 
     routes = {
       '/users': {
         target: usersTarget,
-        '/': 'index'
+        '/': 'index',
+      },
+      '/items': {
+        target: itemsTarget,
+        '/*': 'redirect',
+        '/list': 'list',
+        notFound: 'notFound'
       }
     };
   });
@@ -182,7 +202,7 @@ describe('Navigator', function () {
 
       it('saves root', function () {
         expect( subject.root ).toBe( '/slash/badass' );
-      })
+      });
     });
 
     it('sets up listeners for all clicks', function () {
@@ -343,7 +363,6 @@ describe('Navigator', function () {
             );
           });
         });
-
       });
     });
 
@@ -364,6 +383,44 @@ describe('Navigator', function () {
 
         it('changes the hash to the href with a queryString', function () {
           expect( window.location.hash ).toBe( '#/foo/bar?baz=123' );
+        });
+      });
+    });
+
+    describe('when no route can be found', function () {
+      beforeEach(function () {
+        spyOn( itemsTarget.notFound, 'call' );
+        subject.pushStateEnabled = true;
+        subject._routes = routes;
+        subject._request = null;
+      });
+
+      describe('but there is a redirect in one of the /* matchers', function () {
+        beforeEach(function () {
+          spyOn( itemsTarget.list, 'call' );
+        });
+
+        it('redirects and does not call the notFound matcher', function () {
+          subject.navigate('/items/404', {
+            queryParams: { redirect: '/items/list' }
+          });
+
+          expect( itemsTarget.list.call ).toHaveBeenCalled();
+          expect( itemsTarget.notFound.call ).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('and there is a notFound matcher', function () {
+        it('calls the notFound matcher', function () {
+          subject.navigate('/items/404');
+          expect( itemsTarget.notFound.call ).toHaveBeenCalled();
+        });
+      });
+
+      describe('and is no notFound matcher', function () {
+        it('calls no notFound matcher', function () {
+          subject.navigate('/users/404');
+          expect( itemsTarget.notFound.call ).not.toHaveBeenCalled();
         });
       });
     });

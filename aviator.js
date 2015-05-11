@@ -770,8 +770,10 @@ var Route = function (routes, uri) {
   this.actions      = [];
   this.exits        = [];
   this.options      = {};
+  this.notFound     = null;
+  this.fullMatch    = false;
 
-  this.match(routes);
+  this.matchOrNotFound(routes);
 
   this.uri = uri;
 };
@@ -779,11 +781,24 @@ var Route = function (routes, uri) {
 Route.prototype = {
 
   /**
+  Attempt to match the uri, or call a notFound handler if nothing matches.
+
+  @method matchOrNotFound
+  @param {Object} routeLevel
+  **/
+  matchOrNotFound: function (routeLevel) {
+    this.match(routeLevel);
+
+    if (!this.fullMatch && this.notFound) {
+      this.actions.push(this.notFound);
+    }
+  },
+
+  /**
   Matches the uri from the routes map.
 
   @method match
-  @param {String} routeLevel
-  @return {Object}
+  @param {Object} routeLevel
   **/
   match: function (routeLevel) {
     var value, action, target;
@@ -795,6 +810,14 @@ Route.prototype = {
     if (this.targets.length) {
       target = this.targets[this.targets.length - 1];
     }
+
+    if (routeLevel.notFound && target[routeLevel.notFound]) {
+      this.notFound = {
+        target: target,
+        method: routeLevel.notFound
+      };
+    }
+
 
     action = {
       target: target,
@@ -834,6 +857,10 @@ Route.prototype = {
 
               // Adding the action
               this.actions.push(action);
+
+              if (key !== '/*') {
+                this.fullMatch = true;
+              }
             }
           }
           else if (value.hasOwnProperty('options')) {
