@@ -1,6 +1,6 @@
 describe('Route', function () {
 
-  var routes, uri, subject, usersTarget, navigator;
+  var routes, uri, subject, usersTarget, navigator, invokeAction;
 
   beforeEach(function () {
     usersTarget = {
@@ -10,6 +10,9 @@ describe('Route', function () {
     };
     navigator = Aviator._navigator;
     navigator._routes = {};
+    invokeAction = function (action) {
+      return action.target[action.method]();
+    };
   });
 
   describe('given a uri that doesnt match any routes', function () {
@@ -62,11 +65,8 @@ describe('Route', function () {
         });
 
         it('returns the nearest notFound matcher', function () {
-          expect( subject.actions ).toEqual(
-            [{ method: 'FUNCTION-0', target: subject.anonymous }]
-          );
-
-          expect( subject.anonymous['FUNCTION-0']() ).toEqual(3);
+          expect( subject.actions.length ).toEqual( 1 );
+          expect( invokeAction(subject.actions[0]) ).toEqual( 3 );
         });
       });
     });
@@ -102,11 +102,9 @@ describe('Route', function () {
 
       it('returns the correct route properties', function () {
         expect( subject.matchedRoute ).toBe( '/test/good' );
-        expect( subject.actions ).toEqual([
-          { method: 'FUNCTION-0', target: subject.anonymous }
-        ]);
+        expect( subject.actions.length ).toEqual( 1 );
+        expect( invokeAction(subject.actions[0]) ).toEqual( 42 );
         expect( subject.options ).toEqual( {} );
-        expect( subject.anonymous['FUNCTION-0']() ).toEqual(42);
       });
     });
 
@@ -244,15 +242,15 @@ describe('Route', function () {
 
       it('returns the correct route properties', function () {
         expect( subject.matchedRoute ).toBe( '/users/:uuid/edit' );
-        expect( subject.actions ).toEqual([
-          { method: 'init', target: appTarget },
-          { method: 'FUNCTION-0', target: subject.anonymous },
-          { method: 'initUsers', target: userTarget },
-          { method: 'FUNCTION-1', target: subject.anonymous },
-        ]);
-        expect( subject.options ).toEqual( {} );
-        expect( subject.anonymous['FUNCTION-0']() ).toEqual(0);
-        expect( subject.anonymous['FUNCTION-1']() ).toEqual(1);
+        expect( subject.actions.length ).toEqual( 4 );
+        expect( subject.actions[0] ).toEqual(
+          { method: 'init', target: appTarget }
+        );
+        expect( invokeAction(subject.actions[1]) ).toEqual( 0 );
+        expect( subject.actions[2] ).toEqual(
+          { method: 'initUsers', target: userTarget }
+        );
+        expect( invokeAction(subject.actions[3]) ).toEqual( 1 );
       });
     });
 
