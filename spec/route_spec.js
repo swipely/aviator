@@ -20,8 +20,7 @@ describe('Route', function () {
         before: function() {},
         test: function() {},
         notFound1: function () {},
-        notFound2: function () {},
-        notFound3: function () {}
+        notFound2: function () {}
       };
       navigator._routes = {
         target: notFoundTarget,
@@ -37,7 +36,9 @@ describe('Route', function () {
           '/tulihan': {
             '/': 'test'
           },
-          notFound: 'notFound3'
+          notFound: function() {
+            return 3;
+          }
         }
       };
     });
@@ -62,8 +63,10 @@ describe('Route', function () {
 
         it('returns the nearest notFound matcher', function () {
           expect( subject.actions ).toEqual(
-            [{ method: 'notFound3', target: notFoundTarget }]
+            [{ method: 'FUNCTION-0', target: subject.anonymous }]
           );
+
+          expect( subject.anonymous['FUNCTION-0']() ).toEqual(3);
         });
       });
     });
@@ -84,6 +87,28 @@ describe('Route', function () {
   });
 
   describe('given a matching uri', function () {
+    describe('with one matching function', function () {
+      beforeEach(function () {
+        uri = '/test/good/';
+        navigator._routes = {
+          '/test': {
+            '/good': function () { return 42; },
+            '/bad': function () { return 43; }
+          }
+        };
+
+        subject = navigator.createRouteForURI(uri);
+      });
+
+      it('returns the correct route properties', function () {
+        expect( subject.matchedRoute ).toBe( '/test/good' );
+        expect( subject.actions ).toEqual([
+          { method: 'FUNCTION-0', target: subject.anonymous }
+        ]);
+        expect( subject.options ).toEqual( {} );
+        expect( subject.anonymous['FUNCTION-0']() ).toEqual(42);
+      });
+    });
 
     describe('with one match', function () {
       beforeEach(function () {
@@ -192,6 +217,43 @@ describe('Route', function () {
         ]);
       });
 
+    });
+
+    describe('with multiple matches and functions', function () {
+      var appTarget  = { init: function () {} },
+          userTarget = { initUsers: function () {} };
+
+      beforeEach(function () {
+        uri = '/users/foo/edit';
+
+        navigator._routes = {
+          target: appTarget,
+          '/*': 'init',
+          '/users': {
+            '/*': function () { return 0; },
+            '/:uuid': {
+              target: userTarget,
+              '/*': 'initUsers',
+              '/edit': function () { return 1; }
+            }
+          },
+        };
+
+        subject = navigator.createRouteForURI(uri);
+      });
+
+      it('returns the correct route properties', function () {
+        expect( subject.matchedRoute ).toBe( '/users/:uuid/edit' );
+        expect( subject.actions ).toEqual([
+          { method: 'init', target: appTarget },
+          { method: 'FUNCTION-0', target: subject.anonymous },
+          { method: 'initUsers', target: userTarget },
+          { method: 'FUNCTION-1', target: subject.anonymous },
+        ]);
+        expect( subject.options ).toEqual( {} );
+        expect( subject.anonymous['FUNCTION-0']() ).toEqual(0);
+        expect( subject.anonymous['FUNCTION-1']() ).toEqual(1);
+      });
     });
 
     describe('with multiple matches', function () {
