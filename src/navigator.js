@@ -327,10 +327,10 @@ Navigator.prototype = {
   pop of any exits function and invoke them
 
   @method _invokeExits
-  @param {Request} request
+  @param {Request} nextRequest
   @protected
   **/
-  _invokeExits: function (request) {
+  _invokeExits: function (nextRequest) {
     var exit, target, method;
 
     while(this._exits.length) {
@@ -339,10 +339,10 @@ Navigator.prototype = {
       method = exit.method;
 
       if (!(method in target)) {
-        throw new Error("Can't call exit " + method + ' on target for uri ' + request.uri);
+        throw new Error("Can't call exit " + method + ' on target when changing uri to ' + request.uri);
       }
 
-      target[method].call(target);
+      target[method].call(target, nextRequest);
     }
   },
 

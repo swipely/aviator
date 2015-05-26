@@ -609,7 +609,7 @@ describe('Navigator', function () {
         });
 
         it('calls the previous target exit method', function () {
-          expect( usersTarget.exitIndex ).toHaveBeenCalled();
+          expect( usersTarget.exitIndex ).toHaveBeenCalledWith(subject.getCurrentRequest());
         });
       });
     });
