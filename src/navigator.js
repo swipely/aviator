@@ -376,9 +376,16 @@ Navigator.prototype = {
   @return {String} uri '/s/foo-bar'
   **/
   _removeURIRoot: function (uri) {
-    var rootRegex = new RegExp('^' + this.root);
+    var rootRegex;
 
-    return uri.replace(rootRegex, '');
+    if (this.root) {
+      rootRegex = new RegExp('^' + this.root);
+
+      return uri.replace(rootRegex, '');
+    }
+    else {
+      return uri;
+    }
   },
 
   /**
