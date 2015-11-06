@@ -547,7 +547,9 @@ Navigator.prototype = {
     var pushStateEnabled = this.pushStateEnabled;
 
     if (pushStateEnabled) {
-      addEvent(window, 'popstate', this.onPopState, this);
+      setTimeout(function() {
+        addEvent(window, 'popstate', this.onPopState, this);
+      }, 0);
     }
     else {
       addEvent(window, 'hashchange', this.onURIChange, this);
