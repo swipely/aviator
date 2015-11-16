@@ -216,10 +216,11 @@ describe('Navigator', function () {
         subject.setup({ pushStateEnabled: true });
       });
 
-      it('listens for onpopstate', function () {
-        // workaround for hack (make test pass) 
+      it('listens for onpopstate', function (done) {
+        // workaround for hack (make test pass)
         setTimeout(function() {
           expect( window.addEventListener ).toHaveBeenCalled();
+          done();
         }, 0)
       });
     });
