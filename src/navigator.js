@@ -298,8 +298,9 @@ Navigator.prototype = {
     if (pushStateEnabled) {
       // Popstate fired on initial page load causes double trigger
       // Hack to prevent popState firing two times in Safari (workaround found here: https://github.com/visionmedia/page.js/commit/6e6af2f6c0d7638e06a5ea3de0ff808237bdf2ef)
+      var self = this;
       setTimeout(function() {
-        addEvent(window, 'popstate', this.onPopState, this);
+        addEvent(window, 'popstate', self.onPopState, self);
       }, 0);
     }
     else {
