@@ -33,6 +33,13 @@ var Aviator = {
   root: '',
 
   /**
+  @property fallbackToHashRoutes
+  @type {Boolean}
+  @default true
+  **/
+  fallbackToHashRoutes: true,
+
+  /**
   @property _navigator
   @type {Navigator}
 
@@ -57,9 +64,10 @@ var Aviator = {
     var navigator = this._navigator;
 
     navigator.setup({
-      pushStateEnabled: this.pushStateEnabled,
-      linkSelector:     this.linkSelector,
-      root:             this.root
+      fallbackToHashRoutes: this.fallbackToHashRoutes,
+      pushStateEnabled:     this.pushStateEnabled,
+      linkSelector:         this.linkSelector,
+      root:                 this.root
     });
 
     navigator.dispatch();

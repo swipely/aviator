@@ -34,7 +34,11 @@ Navigator.prototype = {
       }
     }
 
-    this._attachEvents();
+    // If not using push state or hash routes, there's no
+    // need for Aviator to listen to any events.
+    if (this.pushStateEnabled || this.fallbackToHashRoutes) {
+      this._attachEvents();
+    }
   },
 
   /**
@@ -84,7 +88,7 @@ Navigator.prototype = {
   @return {String}
   **/
   getCurrentPathname: function () {
-    if (this.pushStateEnabled) {
+    if (this.pushStateEnabled || !this.fallbackToHashRoutes) {
       return this._removeURIRoot(location.pathname);
     }
     else {
@@ -97,7 +101,7 @@ Navigator.prototype = {
   @return {String}
   **/
   getCurrentURI: function () {
-    if (this.pushStateEnabled) {
+    if (this.pushStateEnabled || !this.fallbackToHashRoutes) {
       return this._removeURIRoot(location.pathname) + location.search;
     }
     else {
@@ -112,7 +116,7 @@ Navigator.prototype = {
   getQueryString: function () {
     var uri, queryString;
 
-    if (this.pushStateEnabled) {
+    if (this.pushStateEnabled || !this.fallbackToHashRoutes) {
       return location.search || null;
     }
     else {
@@ -243,9 +247,13 @@ Navigator.prototype = {
 
       this.onURIChange();
     }
-    else {
+    else if (this.fallbackToHashRoutes) {
       if (options.replace) location.replace('#' + link);
       else location.hash = link;
+    }
+    else {
+      location.replace(this.root + link);
+      return;
     }
   },
 
