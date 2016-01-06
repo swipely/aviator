@@ -436,7 +436,7 @@ Navigator.prototype = {
         pathname,
         uri;
 
-    if (ev.metaKey || ev.ctrlKey) return;
+    if (ev.button === 1 || ev.metaKey || ev.ctrlKey) return;
 
     // Sub optimal. It itererates through all ancestors on every single click :/
     while (target) {
