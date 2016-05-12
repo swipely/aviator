@@ -16,6 +16,11 @@ Aviator:
 
 [![Build Status](https://travis-ci.org/swipely/aviator.png)](https://travis-ci.org/swipely/aviator)
 
+## Install
+```shell
+npm install aviator
+```
+
 ## API
 
 Aviator exposes a small API:
