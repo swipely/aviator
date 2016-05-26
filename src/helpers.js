@@ -28,6 +28,28 @@ var each = function (arr, iterator, context) {
 };
 
 /**
+@method compact
+@param {Array} arr
+@private
+**/
+var compact = function (arr) {
+  return arr.filter(function (x) {
+    return !!x;
+  });
+};
+
+/**
+@method map
+@param {Array} arr
+@param {Function} iterator
+@private
+**/
+
+var map = function (arr, iterator) {
+  return arr.map(iterator);
+};
+
+/**
 @method merge
 @return {Object}
 @private
@@ -92,6 +114,8 @@ var isString = function (val) {
 module.exports = {
   bind: bind,
   each: each,
+  compact: compact,
+  map: map,
   merge: merge,
   addEvent: addEvent,
   isArray: isArray,
