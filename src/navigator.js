@@ -1,11 +1,17 @@
+
+var ActionEmitter = require('./action_emitter');
+
 var helpers = require('./helpers'),
     Request = require('./request'),
     Route   = require('./route');
 
 // helpers
 var each      = helpers.each,
+    map       = helpers.map,
+    compact   = helpers.compact,
     addEvent  = helpers.addEvent,
     isArray   = helpers.isArray;
+
 
 /**
 @class Navigator
@@ -17,6 +23,7 @@ var Navigator = function () {
   this._exits   = [];
   this._silent  = false;
   this._dispatchingStarted = false;
+  this._emitters = [];
 };
 
 Navigator.prototype = {
@@ -136,6 +143,7 @@ Navigator.prototype = {
         queryString = this.getQueryString(),
         request     = this.createRequest(uri, queryString, route.matchedRoute);
 
+    this._emitters = [];
     this._invokeExits(request);
 
     // temporary action array that can be halted
@@ -211,6 +219,19 @@ Navigator.prototype = {
     this.navigate(uri);
   },
 
+  getExitMessage: function () {
+    return compact(map(this._emitters, function (emitter) {
+      return emitter.getExitMessage();
+    })).join(', ') || undefined;
+  },
+
+  onBeforeUnload: function (ev) {
+    var exitMessage = this.getExitMessage();
+
+    ev.returnValue = exitMessage;
+    return exitMessage;
+  },
+
   /**
   @method navigate
   @param {String} uri
@@ -218,6 +239,11 @@ Navigator.prototype = {
   **/
   navigate: function (uri, options) {
     var link;
+
+    var exitMessage = this.getExitMessage();
+    if (exitMessage && !window.confirm(exitMessage)) {
+      return
+    }
 
     options = options || {};
     // halt any previous action invocations
@@ -308,6 +334,7 @@ Navigator.prototype = {
     }
 
     addEvent(document, 'click', this.onClick, this);
+    addEvent(window, 'beforeunload', this.onBeforeUnload, this);
   },
 
   /**
@@ -360,18 +387,21 @@ Navigator.prototype = {
   @protected
   **/
   _invokeActions: function (request, options) {
-    var action, target, method;
+    var action, target, method, emitter;
 
     while (this._actions.length) {
       action = this._actions.shift();
       target = action.target;
       method = action.method;
+      emitter = new ActionEmitter;
 
-     if (!(method in target)) {
+      if (!(method in target)) {
         throw new Error("Can't call action " + method + ' on target for uri ' + request.uri);
       }
 
-      target[method].call(target, request, options);
+      this._emitters.push(emitter);
+
+      target[method].call(target, request, options, emitter);
     }
   },
 

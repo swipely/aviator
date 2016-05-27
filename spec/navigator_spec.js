@@ -656,10 +656,10 @@ describe('Navigator', function () {
     it('invokes all actions with the request and options', function () {
       subject._invokeActions(request, options);
 
-      expect( target.actionOne ).toHaveBeenCalledWith(request, options);
-      expect( target.actionTwo ).toHaveBeenCalledWith(request, options);
-      expect( target.actionThree ).toHaveBeenCalledWith(request, options);
-      expect( target.actionFour ).toHaveBeenCalledWith(request, options);
+      expect( target.actionOne ).toHaveBeenCalledWith(request, options, jasmine.any(Object));
+      expect( target.actionTwo ).toHaveBeenCalledWith(request, options, jasmine.any(Object));
+      expect( target.actionThree ).toHaveBeenCalledWith(request, options, jasmine.any(Object));
+      expect( target.actionFour ).toHaveBeenCalledWith(request, options, jasmine.any(Object));
     });
 
     describe('when an action calls #navigate', function () {
@@ -676,6 +676,23 @@ describe('Navigator', function () {
 
         expect( target.actionThree ).not.toHaveBeenCalled();
         expect( target.actionFour ).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('getExitMessage', function () {
+    describe('without any messages', function () {
+      it('returns undefined', function () {
+        expect(subject.getExitMessage()).toBe(undefined);
+      });
+    });
+    describe('with messages', function () {
+      it('returns 1 comma separated message', function (){
+        subject._emitters = [
+          {getExitMessage: jasmine.createSpy().andReturn('foo')},
+          {getExitMessage: jasmine.createSpy().andReturn('bar')}
+        ];
+        expect(subject.getExitMessage()).toBe('foo, bar');
       });
     });
   });

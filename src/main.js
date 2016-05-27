@@ -1,5 +1,6 @@
 // Modules
 var Navigator = require('./navigator');
+var ActionEmitter = require('./action_emitter');
 
 
 /**
@@ -39,6 +40,7 @@ var Aviator = {
   @private
   **/
   _navigator: new Navigator(),
+  _ActionEmitter: ActionEmitter,
 
   /**
   @method setRoutes
