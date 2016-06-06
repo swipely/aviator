@@ -241,13 +241,15 @@ describe('Navigator', function () {
         event, href;
 
     beforeEach(function () {
-      href = 'abc/foo/bar';
       subject.root = '/abc';
+      location.hostname = 'barnabus.com';
 
       event = {
-        target: { pathname: href },
+        target: { href: 'https://barnabus.com/abc/foo/bar?' },
         preventDefault: function () {}
       };
+
+      spyOn( event, 'preventDefault' );
 
       subject.linkSelector = linkSelector;
     });
@@ -255,25 +257,40 @@ describe('Navigator', function () {
     describe('when the target matches the linkSelector', function () {
       beforeEach(function () {
         spyOn( subject, '_matchesSelector' ).andReturn(true);
-        spyOn( event, 'preventDefault' );
         spyOn( subject, 'navigate' );
-
-        subject.onClick(event);
+        spyOn( subject, '_stripDomain' ).andReturn( '/abc/foo/bar' );
       });
 
       it('calls preventDefault', function () {
+        subject.onClick(event);
+
         expect( event.preventDefault ).toHaveBeenCalled();
       });
 
       it('strips the root and calls #navigate with the href', function () {
+        subject.onClick(event);
+
         expect( subject.navigate ).toHaveBeenCalledWith('/foo/bar');
+      });
+    });
+
+    describe('when the href has a query parameter', function () {
+      beforeEach(function () {
+        spyOn( subject, '_matchesSelector' ).andReturn(true);
+        spyOn( subject, 'navigate' );
+        spyOn( subject, '_stripDomain' ).andReturn( '/abc/foo/bar?all-aboard=true' );
+      });
+
+      it('strips the root, calls navigate, includes the query parameter', function () {
+        subject.onClick(event);
+
+        expect( subject.navigate ).toHaveBeenCalledWith('/foo/bar?all-aboard=true');
       });
     });
 
     describe('when the target doesnt match linkSelector', function () {
       beforeEach(function () {
         spyOn( subject, '_matchesSelector' ).andReturn(false);
-        spyOn( event, 'preventDefault' );
       });
 
       it('doesnt call preventDefault', function () {
@@ -553,12 +570,23 @@ describe('Navigator', function () {
           expect( b ).toBe( '' );
           expect( c ).toBe( '/_SpecRunner.html/foo/bar?baz=boo&userIds[]=2&userIds[]=3' );
         });
+
         subject.navigate('/foo/bar', {
           queryParams: {
             baz: 'boo',
             userIds: [2,3]
           }
         });
+      });
+
+      it('works with query params passed as part of the route', function () {
+        var spy = spyOn( window.history, 'pushState' ).andCallFake(function (a, b, c) {
+          expect( a ).toEqual( 'navigate' );
+          expect( b ).toBe( '' );
+          expect( c ).toBe( '/_SpecRunner.html/foo/bar?baz=boo&userIds[]=2&userIds[]=3' );
+        });
+
+        subject.navigate('/foo/bar?baz=boo&userIds[]=2&userIds[]=3');
       });
     });
   });
@@ -681,11 +709,13 @@ describe('Navigator', function () {
   });
 
   describe('getExitMessage', function () {
+
     describe('without any messages', function () {
       it('returns undefined', function () {
         expect(subject.getExitMessage()).toBe(undefined);
       });
     });
+
     describe('with messages', function () {
       it('returns 1 comma separated message', function (){
         subject._emitters = [
@@ -694,6 +724,15 @@ describe('Navigator', function () {
         ];
         expect(subject.getExitMessage()).toBe('foo, bar');
       });
+    });
+  });
+
+  describe('#_stripDomain', function () {
+    it('returns the uri with search and hash suffixes intact', function () {
+      var href = 'http://www.barnabus.com/all/aboard?the=barna#bus',
+          hostname = 'www.barnabus.com';
+
+      expect ( subject._stripDomain(href, hostname) ).toEqual( '/all/aboard?the=barna#bus' );
     });
   });
 

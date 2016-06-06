@@ -1477,12 +1477,13 @@ Navigator.prototype = {
   onClick: function (ev) {
     var target = ev.target,
         matchesSelector = this._matchesSelector(target),
-        pathname,
+        uriWithoutRoot,
         uri;
 
     if (ev.button === 1 || ev.metaKey || ev.ctrlKey) return;
 
-    // Sub optimal. It itererates through all ancestors on every single click :/
+    // Feels sub-optimal, itererates through all ancestors on every click :/
+    // jquery selector handlers do essentially the same thing though!
     while (target) {
       if (this._matchesSelector(target)) {
         break;
@@ -1495,15 +1496,10 @@ Navigator.prototype = {
 
     ev.preventDefault();
 
-    pathname = target.pathname;
+    uri = this._stripDomain(target.href, window.location.hostname);
+    uriWithoutRoot = this._removeURIRoot(uri);
 
-    // Some browsers drop the leading slash
-    // from an `a` tag's href location.
-    if ( pathname.charAt(0) !== '/' ) pathname = '/' + pathname;
-
-    uri = pathname.replace(this.root, '');
-
-    this.navigate(uri);
+    this.navigate(uriWithoutRoot);
   },
 
   getExitMessage: function () {
@@ -1701,6 +1697,19 @@ Navigator.prototype = {
     var rootRegex = new RegExp('^' + this.root);
 
     return uri.replace(rootRegex, '');
+  },
+
+  /**
+  @method _stripDomain
+  @param {String} href 'http://domain.com/partners/s/foo-bar?with=params#andahash'
+  @param {String} Optional - hostname 'domain.com'
+  @return {String} uri '/partners/s/foo-bar?with=params'
+  **/
+  _stripDomain: function (href, hostname) {
+    var hostname = hostname ? hostname : window.location.hostname,
+        uriStartIndex = href.indexOf(hostname) + hostname.length;
+
+    return href.substr(uriStartIndex);
   },
 
   /**
