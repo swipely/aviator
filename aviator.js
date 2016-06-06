@@ -1515,8 +1515,10 @@ Navigator.prototype = {
   onBeforeUnload: function (ev) {
     var exitMessage = this.getExitMessage();
 
-    ev.returnValue = exitMessage;
-    return exitMessage;
+    if (exitMessage) {
+      ev.returnValue = exitMessage;
+      return exitMessage;
+    }
   },
 
   /**
