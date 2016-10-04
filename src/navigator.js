@@ -418,11 +418,18 @@ Navigator.prototype = {
   @method _stripDomain
   @param {String} href 'http://domain.com/partners/s/foo-bar?with=params#andahash'
   @param {String} Optional - hostname 'domain.com'
+  @param {string} Optional - port '8080'
   @return {String} uri '/partners/s/foo-bar?with=params'
   **/
-  _stripDomain: function (href, hostname) {
+  _stripDomain: function (href, hostname, port) {
     var hostname = hostname ? hostname : window.location.hostname,
         uriStartIndex = href.indexOf(hostname) + hostname.length;
+
+    var port = port ? port : window.location.port;
+    if (port) {
+      var fullHost = hostname + ':' + port;
+      uriStartIndex = href.indexOf(fullHost) + fullHost.length;
+    }
 
     return href.substr(uriStartIndex);
   },
