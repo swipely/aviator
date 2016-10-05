@@ -5,12 +5,12 @@ var map = helpers.map;
 
 var EventEmitter = require('events').EventEmitter;
 var ActionEmitter = function () {
-	this.getExitMessage = function (){
-		return compact(map(this.listeners('exit'), function (listener) {
-			return listener()
-		})).join(', ') || undefined;
-	}
-	return this;
+  this.getExitMessage = function (){
+    return compact(map(this.listeners('exit'), function (listener) {
+      return listener()
+    })).join(', ') || undefined;
+  }
+  return this;
 };
 
 util.inherits(ActionEmitter, EventEmitter);
