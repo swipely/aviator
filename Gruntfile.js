@@ -19,7 +19,7 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('test', ['build', 'jasmine']);
+  grunt.registerTask('test', ['jasmine']);
 
   grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-contrib-watch');
