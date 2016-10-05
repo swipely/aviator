@@ -1,6 +1,7 @@
 {
   "name": "aviator",
   "description": "Aviator is a single-page front-end router built for modularity.",
+  "main": "index.js",
   "keywords": [
     "router",
     "single page application",
@@ -16,18 +17,30 @@
   },
   "devDependencies": {
     "grunt": "~0.4.1",
-    "grunt-contrib-watch": "0.2.0",
-    "grunt-contrib-jasmine": "0.4.2",
-    "grunt-cli": "0.1.9",
     "grunt-contrib-watch": "~0.2.0",
-    "grunt-browserify": "~1.2.0"
+    "grunt-contrib-jasmine": "0.4.2",
+    "grunt-cli": "0.1.9"
   },
-  "main": "src/main.js",
   "scripts": {
     "test": "./node_modules/grunt-cli/bin/grunt test",
-    "build": "./node_modules/grunt-cli/bin/grunt build"
+    "prepublish": "browserify -e src/main.js -o aviator.js"
   },
   "engine": {
     "node": ">=0.8.x"
+  },
+  "dependencies": {
+    "babel-preset-es2015": "^6.16.0",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
   }
 }

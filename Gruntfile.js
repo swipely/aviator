@@ -6,11 +6,6 @@ module.exports = function(grunt) {
         files:    [ 'aviator.js', 'spec/*_spec.js' ],
         tasks:    [ 'jasmine:all' ],
         options:  { interrupt: true }
-      },
-      browserify: {
-        files:    [ 'src/**/*.js' ],
-        tasks:    [ 'browserify:aviator' ],
-        options:  { interrupt: true }
       }
     },
 
@@ -21,20 +16,11 @@ module.exports = function(grunt) {
           specs: 'spec/*_spec.js'
         }
       }
-    },
-
-    browserify: {
-      aviator: {
-        src:  'src/main.js',
-        dest: 'aviator.js'
-      }
     }
   });
 
-  grunt.registerTask('build', ['browserify']);
-  grunt.registerTask('test', ['build', 'jasmine']);
+  grunt.registerTask('test', ['jasmine']);
 
   grunt.loadNpmTasks('grunt-contrib-jasmine');
-  grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-watch');
 };
