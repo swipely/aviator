@@ -734,6 +734,16 @@ describe('Navigator', function () {
 
       expect ( subject._stripDomain(href, hostname) ).toEqual( '/all/aboard?the=barna#bus' );
     });
+
+    describe('on a domain with a port', function () {
+      it('returns the uri without the port', function () {
+        var href = 'http://www.barnabus.com:8080/all/aboard?the=barna#bus',
+            hostname = 'www.barnabus.com';
+            port = '8080';
+
+        expect ( subject._stripDomain(href, hostname, port) ).toEqual( '/all/aboard?the=barna#bus' );
+      });
+    });
   });
 
   describe('onPopState', function () {
