@@ -1,0 +1,5 @@
+.grunt
+*.log
+.DS_Store
+spec
+src
