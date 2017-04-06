@@ -145,4 +145,4 @@ if (window) {
   window.Aviator = Aviator;
 }
 
-module.exports = Aviator;
+export default Aviator;
