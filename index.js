@@ -1,2 +1,2 @@
-var Aviator = require('./aviator.js');
+var Aviator = require('./dist/main.js');
 module.exports = Aviator;
