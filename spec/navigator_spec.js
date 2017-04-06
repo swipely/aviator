@@ -1,3 +1,5 @@
+const Aviator = require('../index');
+
 describe('Navigator', function () {
 
   var subject, itemsTarget, usersTarget, routes;

@@ -1,3 +1,5 @@
+const Aviator = require('../index');
+
 describe('Route', function () {
 
   var routes, uri, subject, usersTarget, navigator, invokeAction;

@@ -1,3 +1,5 @@
+const Aviator = require('../index');
+
 describe('ActionEmitter', function () {
   beforeEach(function () {
     subject = new Aviator._ActionEmitter;
